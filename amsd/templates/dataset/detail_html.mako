@@ -1,7 +1,7 @@
 <%inherit file="../home_comp.mako"/>
 
 <h2>Welcome to the Australian Message Stick Database</h2>
-    <div class="fluid pull-right" style="padding: 20px; text-align: center;">
+    <div class="fluid pull-right" style="padding: 20px; padding-bottom: 180px; text-align: center;">
         <img width="280"
              src="${request.static_url('amsd:static/amsd_logo.png')}"
              class="image"/>
@@ -14,9 +14,10 @@
     across the world. It also stores photographs and sketches of messages that
     are no longer extant. The database is searchable via 30 fields, including
     linguistic area, semantic domain, motifs and source. The full dataset will
-    be migrated to this location soon. In the meantime click <a
-        href="https://cdhrsys.anu.edu.au/occams_v1c/index.php" target="_blank">here</a>
-    to visit the beta version and the Help link for access instructions.
+    be migrated to this location soon. In the meantime, please find the access
+    instructions for the beta version below. Note that log-in credentials will only
+    be provided to scholars, Indigenous people and museum staff, until all
+    permissions are finalised.
 </p>
 
 <h2>Example</h2>
