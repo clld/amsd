@@ -8,6 +8,7 @@ from clld.db.meta import DBSession
 from clld.db.models import common
 from clldutils.path import Path
 from clldutils.dsv import reader
+from clldutils.misc import slug
 
 import amsd
 from amsd import models
@@ -66,12 +67,26 @@ def main(args):
             glottolog_code = row['glottolog_code'],
         )
 
+    for row in dicts('item_type'):
+        data.add(
+            models.item_type,
+            row['pk'],
+            name = row['name'],
+        )
+
+    for row in dicts('holder_file'):
+        data.add(
+            models.holder_file,
+            row['pk'],
+            name = row['name'],
+        )
+
     # sticks => MessageStick
-    for row in dicts('sticks'):
+    for i, row in enumerate(dicts('sticks')):
         data.add(
             models.MessageStick,
             row['pk'],
-            amsd_id = row['amsd_id'],
+            id = slug(row['amsd_id']) or "amsd_%i" % (i),
             title = row['title'],
             keywords = row['keywords'],
             description = row['description'],
@@ -79,7 +94,7 @@ def main(args):
             date_created = row['date_created'],
             note_place_created = row['note_place_created'],
             place_created = row['place_created'],
-            item_type = row['item_type'] or None,
+            item_type_pk = row['item_type'] or None,
             ling_area_1_pk = row['ling_area_1'] or None,
             ling_area_2_pk = row['ling_area_2'] or None,
             ling_area_3_pk = row['ling_area_3'] or None,
@@ -95,9 +110,9 @@ def main(args):
             material = row['material'],
             technique = row['technique'],
             source_citation = row['source_citation'],
-            source_type = row['source_type'],
+            source_type = row['source_type'] or None,
             date_collected = row['date_collected'],
-            holder_file = row['holder_file'] or None,
+            holder_file_pk = row['holder_file'] or None,
             holder_obj_id = row['holder_obj_id'],
             collector = row['collector'],
             place_collected = row['place_collected'],
