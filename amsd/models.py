@@ -16,6 +16,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
 from clld.db.models.common import Language, Contribution, Contributor
+from amsd.util import get_linked_filename_urls
 
 # -----------------------------------------------------------------------------
 # specialized common mapper classes
@@ -47,10 +48,16 @@ class holder_file(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
+@implementer(amsd_interfaces.Ilinked_filenames)
+class linked_filenames(Base):
+    pk = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+    oid = Column(Unicode)
+    path = Column(Unicode)
+
 @implementer(interfaces.IContribution)
 class MessageStick(CustomModelMixin, Contribution):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
-    # amsd_id = Column(Unicode)
     title = Column(Unicode)
     keywords = Column(Unicode)
     obj_creator = Column(Unicode)
@@ -103,3 +110,5 @@ class MessageStick(CustomModelMixin, Contribution):
     data_entry = Column(Unicode)
     linked_filenames = Column(Unicode)
 
+    def get_linked_filenames(self, pks, image_type='thumbnail'):
+        return get_linked_filename_urls(pks, image_type)

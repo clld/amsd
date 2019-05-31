@@ -13,3 +13,6 @@ class Iitem_type(Interface):
 
 class Idata_entry(Interface):
     """marker"""
+
+class Ilinked_filenames(Interface):
+    """marker"""

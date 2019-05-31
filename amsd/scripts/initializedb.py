@@ -81,6 +81,15 @@ def main(args):
             name = row['name'],
         )
 
+    for row in dicts('linked_filenames'):
+        data.add(
+            models.linked_filenames,
+            row['pk'],
+            name = row['name'],
+            oid = row['oid'],
+            path = row['path'],
+        )
+
     # sticks => MessageStick
     for i, row in enumerate(dicts('sticks')):
         data.add(
