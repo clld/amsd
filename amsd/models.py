@@ -1,6 +1,5 @@
 from zope.interface import implementer
 
-from amsd import interfaces as amsd_interfaces
 from sqlalchemy import (
     Column,
     Unicode,
@@ -25,7 +24,7 @@ from amsd.util import get_linked_filename_urls
 class amsdLanguage(CustomModelMixin, Language):
    pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
 
-@implementer(amsd_interfaces.Iling_area)
+
 class ling_area(Base):
     pk = Column(Integer, primary_key=True)
     chirila_name = Column(Unicode)
@@ -33,52 +32,53 @@ class ling_area(Base):
     austlang_name = Column(Unicode)
     glottolog_code = Column(Unicode)
 
-@implementer(amsd_interfaces.Iitem_type)
+
 class item_type(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Imaterial)
+
 class material(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Idata_entry)
+
 class data_entry(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Iholder_file)
+
 class holder_file(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Isem_domain)
+
 class sem_domain(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Isource_type)
+
 class source_type(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Itechnique)
+
 class technique(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Ikeyword)
+
 class keyword(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
-@implementer(amsd_interfaces.Ilinked_filenames)
+
 class linked_filenames(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
     oid = Column(Unicode)
     path = Column(Unicode)
+
 
 @implementer(interfaces.IContribution)
 class MessageStick(CustomModelMixin, Contribution):
