@@ -38,6 +38,11 @@ class item_type(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 
+@implementer(amsd_interfaces.Imaterial)
+class material(Base):
+    pk = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+
 @implementer(amsd_interfaces.Idata_entry)
 class data_entry(Base):
     pk = Column(Integer, primary_key=True)
@@ -45,6 +50,26 @@ class data_entry(Base):
 
 @implementer(amsd_interfaces.Iholder_file)
 class holder_file(Base):
+    pk = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+
+@implementer(amsd_interfaces.Isem_domain)
+class sem_domain(Base):
+    pk = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+
+@implementer(amsd_interfaces.Isource_type)
+class source_type(Base):
+    pk = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+
+@implementer(amsd_interfaces.Itechnique)
+class technique(Base):
+    pk = Column(Integer, primary_key=True)
+    name = Column(Unicode)
+
+@implementer(amsd_interfaces.Ikeyword)
+class keyword(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
 

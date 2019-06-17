@@ -88,6 +88,52 @@
 % if ctx.notes_ling_area:
     <p><b>Notes on linguistic areas: </b>${ctx.notes_ling_area}</p>
 % endif
+% if ctx.stick_term:
+    <p><b>Term for 'message stick' (or related) in language: </b>${ctx.stick_term}</p>
+% endif
+% if ctx.motifs:
+    <p><b>Motifs: </b>${ctx.motifs}</p>
+% endif
+% if ctx.motif_transcription:
+    <p><b>Motif transcription: </b>${ctx.motif_transcription}</p>
+% endif
+% if semantic_domains:
+    <p><b>Semantic domains: </b>${semantic_domains|n}</p>
+% endif
+% if ctx.dim_1 or ctx.dim_2 or ctx.dim_3:
+    <p>
+        % if ctx.dim_1:
+            <b>Dimension 1: </b>${ctx.dim_1}mm
+        % endif
+        % if ctx.dim_2:
+            <b>Dimension 2: </b>${ctx.dim_2}mm
+        % endif
+        % if ctx.dim_3:
+            <b>Dimension 3: </b>${ctx.dim_3}mm
+        % endif
+    </p>
+% endif
+% if materials:
+    <p><b>Materials: </b>${materials|n}</p>
+% endif
+% if techniques:
+    <p><b>Techniques: </b>${techniques|n}</p>
+% endif
+% if sources:
+    <p><b>Sources: </b>${sources|n}</p>
+% endif
+% if source_types:
+    <p><b>Source types: </b>${source_types|n}</p>
+% endif
+% if ctx.date_collected:
+    <p><b>Date collected: </b>${ctx.date_collected}</p>
+% endif
+% if ctx.holder_file:
+    <p><b>Institution/Holder file: </b>${ctx.holder_file}
+% endif
+% if ctx.holder_obj_id:
+     <b>object identifier: </b>${ctx.holder_obj_id}</p>
+% endif
 % if data_entry:
     <p><b>Data Entry: </b>${data_entry|n}</p>
 % endif

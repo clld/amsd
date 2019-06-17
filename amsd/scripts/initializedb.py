@@ -57,6 +57,14 @@ def main(args):
     for i, cid in enumerate(editors.values()):
         common.Editor(dataset=dataset, contributor=data['Contributor'][cid], ord=i + 1)
 
+    for row in dicts('source_citation'):
+        data.add(
+            common.Source,
+            row['pk'],
+            id=row['pk'],
+            note=row['name']
+        )
+
     for row in dicts('ling_area'):
         data.add(
             models.ling_area,
@@ -70,6 +78,41 @@ def main(args):
     for row in dicts('item_type'):
         data.add(
             models.item_type,
+            row['pk'],
+            name = row['name'],
+        )
+
+    for row in dicts('technique'):
+        data.add(
+            models.technique,
+            row['pk'],
+            name = row['name'],
+        )
+
+    for row in dicts('keywords'):
+        data.add(
+            models.keyword,
+            row['pk'],
+            name = row['name'],
+        )
+
+    for row in dicts('material'):
+        data.add(
+            models.material,
+            row['pk'],
+            name = row['name'],
+        )
+
+    for row in dicts('source_type'):
+        data.add(
+            models.source_type,
+            row['pk'],
+            name = row['name'],
+        )
+
+    for row in dicts('sem_domain'):
+        data.add(
+            models.sem_domain,
             row['pk'],
             name = row['name'],
         )
@@ -95,7 +138,7 @@ def main(args):
         data.add(
             models.MessageStick,
             row['pk'],
-            id = slug(row['amsd_id']) or "amsd_%i" % (i),
+            id = row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
             title = row['title'],
             keywords = row['keywords'],
             description = row['description'],
