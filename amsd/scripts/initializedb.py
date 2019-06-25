@@ -57,6 +57,14 @@ def main(args):
     for i, cid in enumerate(editors.values()):
         common.Editor(dataset=dataset, contributor=data['Contributor'][cid], ord=i + 1)
 
+    for row in dicts('source_citation'):
+        data.add(
+            common.Source,
+            row['pk'],
+            id=row['pk'],
+            note=row['name']
+        )
+
     for row in dicts('ling_area'):
         data.add(
             models.ling_area,
@@ -67,28 +75,31 @@ def main(args):
             glottolog_code = row['glottolog_code'],
         )
 
-    for row in dicts('item_type'):
+    for row in dicts('linked_filenames'):
         data.add(
-            models.item_type,
+            models.linked_filenames,
             row['pk'],
             name = row['name'],
+            oid = row['oid'],
+            path = row['path'],
         )
 
-    for row in dicts('holder_file'):
-        data.add(
-            models.holder_file,
-            row['pk'],
-            name = row['name'],
-        )
+    for m in 'item_type technique keywords material source_type sem_domain holder_file'.split():
+        for row in dicts(m):
+            data.add(
+                getattr(models, m),
+                row['pk'],
+                name = row['name'],
+            )
 
     # sticks => MessageStick
     for i, row in enumerate(dicts('sticks')):
         data.add(
             models.MessageStick,
             row['pk'],
-            id = slug(row['amsd_id']) or "amsd_%i" % (i),
+            id = row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
             title = row['title'],
-            keywords = row['keywords'],
+            keyword = row['keywords'],
             description = row['description'],
             obj_creator = row['obj_creator'],
             date_created = row['date_created'],

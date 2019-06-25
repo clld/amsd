@@ -1,6 +1,5 @@
 from zope.interface import implementer
 
-from amsd import interfaces as amsd_interfaces
 from sqlalchemy import (
     Column,
     Unicode,
@@ -15,7 +14,8 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
-from clld.db.models.common import Language, Contribution, Contributor
+from clld.db.models.common import Language, Contribution, Contributor, IdNameDescriptionMixin
+from amsd.util import get_linked_filename_urls
 
 # -----------------------------------------------------------------------------
 # specialized common mapper classes
@@ -24,7 +24,7 @@ from clld.db.models.common import Language, Contribution, Contributor
 class amsdLanguage(CustomModelMixin, Language):
    pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
 
-@implementer(amsd_interfaces.Iling_area)
+
 class ling_area(Base):
     pk = Column(Integer, primary_key=True)
     chirila_name = Column(Unicode)
@@ -32,33 +32,49 @@ class ling_area(Base):
     austlang_name = Column(Unicode)
     glottolog_code = Column(Unicode)
 
-@implementer(amsd_interfaces.Iitem_type)
-class item_type(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
 
-@implementer(amsd_interfaces.Idata_entry)
-class data_entry(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+class item_type(Base, IdNameDescriptionMixin):
+    pass
 
-@implementer(amsd_interfaces.Iholder_file)
-class holder_file(Base):
+class material(Base, IdNameDescriptionMixin):
+    pass
+
+class data_entry(Base, IdNameDescriptionMixin):
+    pass
+
+class holder_file(Base, IdNameDescriptionMixin):
+    pass
+
+class sem_domain(Base, IdNameDescriptionMixin):
+    pass
+
+class source_type(Base, IdNameDescriptionMixin):
+    pass
+
+class technique(Base, IdNameDescriptionMixin):
+    pass
+
+class keywords(Base, IdNameDescriptionMixin):
+    pass
+
+class linked_filenames(Base):
     pk = Column(Integer, primary_key=True)
     name = Column(Unicode)
+    oid = Column(Unicode)
+    path = Column(Unicode)
+
 
 @implementer(interfaces.IContribution)
 class MessageStick(CustomModelMixin, Contribution):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
-    # amsd_id = Column(Unicode)
     title = Column(Unicode)
-    keywords = Column(Unicode)
+    keyword = Column(Unicode)
     obj_creator = Column(Unicode)
     date_created = Column(Unicode)
     note_place_created = Column(Unicode)
     place_created = Column(Unicode)
     item_type_pk = Column(Integer, ForeignKey("item_type.pk"))
-    item_type = relationship('item_type', foreign_keys=[item_type_pk])
+    item_type = relationship(item_type, backref='item_type')
     ling_area_1_pk = Column(Integer, ForeignKey("ling_area.pk"))
     ling_area_2_pk = Column(Integer, ForeignKey("ling_area.pk"))
     ling_area_3_pk = Column(Integer, ForeignKey("ling_area.pk"))
@@ -103,3 +119,5 @@ class MessageStick(CustomModelMixin, Contribution):
     data_entry = Column(Unicode)
     linked_filenames = Column(Unicode)
 
+    def get_linked_filenames(self, pks, image_type='thumbnail'):
+        return get_linked_filename_urls(pks, image_type)

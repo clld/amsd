@@ -1,7 +1,5 @@
 from pyramid.config import Configurator
-from clld.interfaces import IContribution
 
-# we must make sure custom models are known at database initialization!
 from amsd import models
 
 _ = lambda s: s
