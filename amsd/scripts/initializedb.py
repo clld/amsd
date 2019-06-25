@@ -75,55 +75,6 @@ def main(args):
             glottolog_code = row['glottolog_code'],
         )
 
-    for row in dicts('item_type'):
-        data.add(
-            models.item_type,
-            row['pk'],
-            name = row['name'],
-        )
-
-    for row in dicts('technique'):
-        data.add(
-            models.technique,
-            row['pk'],
-            name = row['name'],
-        )
-
-    for row in dicts('keywords'):
-        data.add(
-            models.keyword,
-            row['pk'],
-            name = row['name'],
-        )
-
-    for row in dicts('material'):
-        data.add(
-            models.material,
-            row['pk'],
-            name = row['name'],
-        )
-
-    for row in dicts('source_type'):
-        data.add(
-            models.source_type,
-            row['pk'],
-            name = row['name'],
-        )
-
-    for row in dicts('sem_domain'):
-        data.add(
-            models.sem_domain,
-            row['pk'],
-            name = row['name'],
-        )
-
-    for row in dicts('holder_file'):
-        data.add(
-            models.holder_file,
-            row['pk'],
-            name = row['name'],
-        )
-
     for row in dicts('linked_filenames'):
         data.add(
             models.linked_filenames,
@@ -133,6 +84,14 @@ def main(args):
             path = row['path'],
         )
 
+    for m in 'item_type technique keywords material source_type sem_domain holder_file'.split():
+        for row in dicts(m):
+            data.add(
+                getattr(models, m),
+                row['pk'],
+                name = row['name'],
+            )
+
     # sticks => MessageStick
     for i, row in enumerate(dicts('sticks')):
         data.add(
@@ -140,7 +99,7 @@ def main(args):
             row['pk'],
             id = row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
             title = row['title'],
-            keywords = row['keywords'],
+            keyword = row['keywords'],
             description = row['description'],
             obj_creator = row['obj_creator'],
             date_created = row['date_created'],

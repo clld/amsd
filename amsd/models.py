@@ -14,7 +14,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
-from clld.db.models.common import Language, Contribution, Contributor
+from clld.db.models.common import Language, Contribution, Contributor, IdNameDescriptionMixin
 from amsd.util import get_linked_filename_urls
 
 # -----------------------------------------------------------------------------
@@ -33,45 +33,29 @@ class ling_area(Base):
     glottolog_code = Column(Unicode)
 
 
-class item_type(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+class item_type(Base, IdNameDescriptionMixin):
+    pass
 
+class material(Base, IdNameDescriptionMixin):
+    pass
 
-class material(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+class data_entry(Base, IdNameDescriptionMixin):
+    pass
 
+class holder_file(Base, IdNameDescriptionMixin):
+    pass
 
-class data_entry(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+class sem_domain(Base, IdNameDescriptionMixin):
+    pass
 
+class source_type(Base, IdNameDescriptionMixin):
+    pass
 
-class holder_file(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
+class technique(Base, IdNameDescriptionMixin):
+    pass
 
-
-class sem_domain(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-
-
-class source_type(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-
-
-class technique(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-
-
-class keyword(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-
+class keywords(Base, IdNameDescriptionMixin):
+    pass
 
 class linked_filenames(Base):
     pk = Column(Integer, primary_key=True)
@@ -84,13 +68,13 @@ class linked_filenames(Base):
 class MessageStick(CustomModelMixin, Contribution):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     title = Column(Unicode)
-    keywords = Column(Unicode)
+    keyword = Column(Unicode)
     obj_creator = Column(Unicode)
     date_created = Column(Unicode)
     note_place_created = Column(Unicode)
     place_created = Column(Unicode)
     item_type_pk = Column(Integer, ForeignKey("item_type.pk"))
-    item_type = relationship('item_type', foreign_keys=[item_type_pk])
+    item_type = relationship(item_type, backref='item_type')
     ling_area_1_pk = Column(Integer, ForeignKey("ling_area.pk"))
     ling_area_2_pk = Column(Integer, ForeignKey("ling_area.pk"))
     ling_area_3_pk = Column(Integer, ForeignKey("ling_area.pk"))
