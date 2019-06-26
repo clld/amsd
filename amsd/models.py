@@ -14,8 +14,15 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
-from clld.db.models.common import Language, Contribution, Contributor, IdNameDescriptionMixin
-from amsd.util import get_linked_filename_urls
+from clld.db.models.common import (
+    Language,
+    Contribution,
+    Contributor,
+    IdNameDescriptionMixin,
+    HasFilesMixin,
+)
+
+from clld.web.util.htmllib import HTML
 
 # -----------------------------------------------------------------------------
 # specialized common mapper classes
@@ -57,15 +64,8 @@ class technique(Base, IdNameDescriptionMixin):
 class keywords(Base, IdNameDescriptionMixin):
     pass
 
-class linked_filenames(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-    oid = Column(Unicode)
-    path = Column(Unicode)
-
-
 @implementer(interfaces.IContribution)
-class MessageStick(CustomModelMixin, Contribution):
+class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     title = Column(Unicode)
     keyword = Column(Unicode)
@@ -117,7 +117,29 @@ class MessageStick(CustomModelMixin, Contribution):
     irn = Column(Unicode)
     notes = Column(Unicode)
     data_entry = Column(Unicode)
-    linked_filenames = Column(Unicode)
 
-    def get_linked_filenames(self, pks, image_type='thumbnail'):
-        return get_linked_filename_urls(pks, image_type)
+    def get_images(self, image_type='thumbnail', width='40'):
+        if not self.files:
+            return ''
+        res = []
+        cdstar_url = 'https://cdstar.shh.mpg.de/bitstreams/'
+        for k, f in self.files.items():
+            if image_type in ['web', 'thumbnail']:
+                res.append(
+                        HTML.a(
+                            HTML.img(
+                                alt = f.name,
+                                title = f.name,
+                                width = '%spx' % (width) if width else 'auto',
+                                src = '%s/%s' % (cdstar_url, f.jsondata.get(image_type)),
+                            ),
+                            href = '%s/%s' % (cdstar_url, f.jsondata.get('url')),
+                            target = '_new')
+                        )
+            else:
+                res.append(HTML.img(
+                    alt = f.name,
+                    title = f.name,
+                    src = '%s/%s' % (cdstar_url, f.jsondata.get('url')))
+                )
+        return '&nbsp;'.join(res)

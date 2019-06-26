@@ -11,7 +11,6 @@ from clld.db.models.common import (
 from amsd.models import (
     MessageStick)
 from clld.web.util.htmllib import HTML
-from pprint import pprint
 
 class AmsdContributors(Contributors):
     def col_defs(self):
@@ -27,7 +26,7 @@ class AmsdContributions(Contributions):
             Col(self, 'title', model_col=MessageStick.title),
             AmsdLongTextFieldCol(self, 'message', model_col=MessageStick.message),
             Col(self, 'date_created', model_col=MessageStick.date_created, sTitle='Date Created'),
-            AmsdThumbnailCol(self, 'linked_filenames', sTitle='Image'),
+            AmsdThumbnailCol(self, 'image', sTitle='Image'),
             # CitationCol(self, 'cite'),
             DetailsRowLinkCol(self, 'more'),
         ]
@@ -36,7 +35,7 @@ class AmsdThumbnailCol(Col):
     __kw__ = dict(bSearchable=False, bSortable=False)
 
     def format(self, item):
-        return item.get_linked_filenames(item.linked_filenames, 'thumbnail')
+        return item.get_images()
 
 
 class AmsdLongTextFieldCol(Col):
