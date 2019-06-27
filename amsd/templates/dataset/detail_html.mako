@@ -10,7 +10,7 @@
 <p class="lead">
     Message sticks are carved graphic devices from Indigenous Australia, used to
     facilitate long-distance communication. This database is a digital
-    repository of 1024 message sticks and associated metadata located in museums
+    repository of ${count_sticks} message sticks and associated metadata located in museums
     across the world. It also stores photographs and sketches of messages that
     are no longer extant. The database is searchable via 30 fields, including
     linguistic area, semantic domain, motifs and source. The full dataset will
@@ -29,15 +29,15 @@
             <tbody>
             <tr>
                 <th>Artefacts</th>
-                <td class="right">1024</td>
+                <td class="right">${count_sticks}</td>
             </tr>
             <tr>
                 <th>Linguistic areas</th>
-                <td class="right">54</td>
+                <td class="right">${count_ling_areas}</td>
             </tr>
             <tr>
                 <th>Motifs</th>
-                <td class="right">37</td>
+                <td class="right">${count_motifs}</td>
             </tr>
             </tbody>
         </table>

@@ -18,6 +18,16 @@ def contribution_detail_html(context=None, request=None, **kw):
         'linked_filename_urls': context.get_images('web', ''),
     }
 
+def dataset_detail_html(context=None, request=None, **kw):
+    return {
+        'count_sticks': len(DBSession.query(amsd.models.MessageStick).all()),
+        'count_ling_areas': len(DBSession.query(amsd.models.ling_area).all()),
+        'count_motifs': len(DBSession.query(
+                amsd.models.MessageStick.motifs)
+                    .filter(amsd.models.MessageStick.motifs != '')
+                    .distinct().all()),
+    }
+
 def get_sem_domains(context=None, request=None, **kw):
     res = []
     if not context.sem_domain:
