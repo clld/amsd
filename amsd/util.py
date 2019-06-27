@@ -14,7 +14,6 @@ def contribution_detail_html(context=None, request=None, **kw):
         'semantic_domains': get_sem_domains(context, request),
         'materials': get_materials(context, request),
         'techniques': get_techniques(context, request),
-        'sources': get_sources(context, request),
         'source_types': get_source_types(context, request),
         'linked_filename_urls': context.get_images('web', ''),
     }
@@ -62,15 +61,6 @@ def get_techniques(context=None, request=None, **kw):
         for f in DBSession.query(amsd.models.technique).filter(amsd.models.technique.pk == r):
             res.append(f.name)
     return ', '.join(sorted(res))
-
-def get_sources(context=None, request=None, **kw):
-    res = []
-    if not context.source_citation:
-        return ''
-    for r in context.source_citation.split(';'):
-        for f in DBSession.query(Source).filter(Source.pk == r):
-            res.append(f.note)
-    return '<ul><li>' + '</li><li>'.join(res) + '</li></ul>'
 
 def get_source_types(context=None, request=None, **kw):
     res = []

@@ -93,7 +93,6 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     dim_3 = Column(Unicode)
     material = Column(Unicode)
     technique = Column(Unicode)
-    source_citation = Column(Unicode)
     source_type = Column(Unicode)
     date_collected = Column(Unicode)
     holder_file_pk = Column(Integer, ForeignKey("holder_file.pk"))

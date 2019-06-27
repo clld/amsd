@@ -121,7 +121,6 @@ def main(args):
             dim_3 = row['dim_3'],
             material = row['material'],
             technique = row['technique'],
-            source_citation = row['source_citation'],
             source_type = row['source_type'] or None,
             date_collected = row['date_collected'],
             holder_file_pk = row['holder_file'] or None,
