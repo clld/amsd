@@ -14,8 +14,16 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
-from clld.db.models.common import Language, Contribution, Contributor, IdNameDescriptionMixin
-from amsd.util import get_linked_filename_urls
+from clld.db.models.common import (
+    Language,
+    Contribution,
+    Contributor,
+    IdNameDescriptionMixin,
+    HasFilesMixin,
+)
+
+from clld.web.util.htmllib import HTML
+from clldmpg import cdstar
 
 # -----------------------------------------------------------------------------
 # specialized common mapper classes
@@ -57,15 +65,8 @@ class technique(Base, IdNameDescriptionMixin):
 class keywords(Base, IdNameDescriptionMixin):
     pass
 
-class linked_filenames(Base):
-    pk = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-    oid = Column(Unicode)
-    path = Column(Unicode)
-
-
 @implementer(interfaces.IContribution)
-class MessageStick(CustomModelMixin, Contribution):
+class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     title = Column(Unicode)
     keyword = Column(Unicode)
@@ -117,7 +118,35 @@ class MessageStick(CustomModelMixin, Contribution):
     irn = Column(Unicode)
     notes = Column(Unicode)
     data_entry = Column(Unicode)
-    linked_filenames = Column(Unicode)
 
-    def get_linked_filenames(self, pks, image_type='thumbnail'):
-        return get_linked_filename_urls(pks, image_type)
+    def get_images(self, image_type='thumbnail', width='40'):
+        if not self.files:
+            return ''
+        res = []
+        for k, f in self.files.items():
+            if image_type in ['web', 'thumbnail']:
+                res.append(
+                    HTML.a(
+                        HTML.img(
+                            src = cdstar.bitstream_url(f, image_type),
+                            width = '%spx' % (width) if width else 'auto',
+                            class_='image_%s' % (image_type),
+                        ),
+                        href = cdstar.bitstream_url(f) if not f.jsondata.get('refobjid') \
+                            else '%sbitstreams/%s/%s' % (
+                                cdstar.SERVICE_URL, f.jsondata.get('refobjid'), f.jsondata.get('original')),
+                        title = f.name,
+                        target= '_new',
+                    )
+                )
+            else:
+                res.append(
+                    HTML.img(
+                        title = f.name,
+                        class_='image',
+                        src = cdstar.bitstream_url(f) if not f.jsondata.get('refobjid') \
+                            else '%sbitstreams/%s/%s' % (
+                                cdstar.SERVICE_URL, f.jsondata.get('refobjid'), f.jsondata.get('original')),
+                    )
+                )
+        return ''.join(res)

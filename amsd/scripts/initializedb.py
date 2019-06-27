@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import sys
 import re
+import mimetypes
 from collections import OrderedDict
 
 from clld.scripts.util import initializedb, Data
@@ -74,15 +75,15 @@ def main(args):
             austlang_name = row['austlang_name'],
             glottolog_code = row['glottolog_code'],
         )
-
+    fd = {}
     for row in dicts('linked_filenames'):
-        data.add(
-            models.linked_filenames,
-            row['pk'],
-            name = row['name'],
-            oid = row['oid'],
-            path = row['path'],
-        )
+        if row['name'] not in ['00-Text_reference.png', '00-No_image_available.png']:
+            fd[row['pk']] = dict(
+                name = row['name'],
+                oid = row['oid'],
+                path = row['path'],
+                mimetype = mimetypes.guess_type(row['path'])[0],
+            )
 
     for m in 'item_type technique keywords material source_type sem_domain holder_file'.split():
         for row in dicts(m):
@@ -138,8 +139,33 @@ def main(args):
             irn = row['irn'],
             notes = row['notes'],
             data_entry = row['data_entry'],
-            linked_filenames = row['linked_filenames'],
         )
+        if row['linked_filenames']:
+            for i, k in enumerate(row['linked_filenames'].split(';')):
+                if k in fd:
+                    oid = fd[k].get('oid')
+                    mt = fd[k].get('mimetype')
+                    refobjid = ''
+                    if mt == 'application/pdf':
+                        refobjid = oid
+                        # use for web, thumbnail a place holder image
+                        oid = 'EAEA0-52CC-0295-6B71-0'
+                    data.add(
+                        common.Contribution_files,
+                        k,
+                        id='%s-%s-%i' % (k, row['pk'], i),
+                        object_pk = int(row['pk']),
+                        name = fd[k].get('name'),
+                        jsondata = dict(
+                                original = fd[k].get('path'),
+                                objid = oid,
+                                refobjid = refobjid,
+                                web = 'web.jpg',
+                                thumbnail = 'thumbnail.jpg',
+                            ),
+                        ord=i,
+                        mime_type = mt,
+                    )
 
 
 def prime_cache(args):
