@@ -23,6 +23,7 @@ from clld.db.models.common import (
 )
 
 from clld.web.util.htmllib import HTML
+from clldmpg import cdstar
 
 # -----------------------------------------------------------------------------
 # specialized common mapper classes
@@ -122,24 +123,30 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
         if not self.files:
             return ''
         res = []
-        cdstar_url = 'https://cdstar.shh.mpg.de/bitstreams/'
         for k, f in self.files.items():
             if image_type in ['web', 'thumbnail']:
                 res.append(
-                        HTML.a(
-                            HTML.img(
-                                alt = f.name,
-                                title = f.name,
-                                width = '%spx' % (width) if width else 'auto',
-                                src = '%s/%s' % (cdstar_url, f.jsondata.get(image_type)),
-                            ),
-                            href = '%s/%s' % (cdstar_url, f.jsondata.get('url')),
-                            target = '_new')
-                        )
-            else:
-                res.append(HTML.img(
-                    alt = f.name,
-                    title = f.name,
-                    src = '%s/%s' % (cdstar_url, f.jsondata.get('url')))
+                    HTML.a(
+                        HTML.img(
+                            src = cdstar.bitstream_url(f, image_type),
+                            width = '%spx' % (width) if width else 'auto',
+                            class_='image_%s' % (image_type),
+                        ),
+                        href = cdstar.bitstream_url(f) if not f.jsondata.get('refobjid') \
+                            else '%sbitstreams/%s/%s' % (
+                                cdstar.SERVICE_URL, f.jsondata.get('refobjid'), f.jsondata.get('original')),
+                        title = f.name,
+                        target= '_new',
+                    )
                 )
-        return '&nbsp;'.join(res)
+            else:
+                res.append(
+                    HTML.img(
+                        title = f.name,
+                        class_='image',
+                        src = cdstar.bitstream_url(f) if not f.jsondata.get('refobjid') \
+                            else '%sbitstreams/%s/%s' % (
+                                cdstar.SERVICE_URL, f.jsondata.get('refobjid'), f.jsondata.get('original')),
+                    )
+                )
+        return ''.join(res)

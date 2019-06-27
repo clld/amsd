@@ -81,7 +81,7 @@ def main(args):
             fd[row['pk']] = dict(
                 name = row['name'],
                 oid = row['oid'],
-                path = '%s/%s' % (row['oid'], row['path']),
+                path = row['path'],
                 mimetype = mimetypes.guess_type(row['path'])[0],
             )
 
@@ -145,10 +145,11 @@ def main(args):
                 if k in fd:
                     oid = fd[k].get('oid')
                     mt = fd[k].get('mimetype')
+                    refobjid = ''
                     if mt == 'application/pdf':
+                        refobjid = oid
+                        # use for web, thumbnail a place holder image
                         oid = 'EAEA0-52CC-0295-6B71-0'
-                    tn = '%s/thumbnail.jpg' % (oid)
-                    w = '%s/web.jpg' % (oid)
                     data.add(
                         common.Contribution_files,
                         k,
@@ -156,9 +157,11 @@ def main(args):
                         object_pk = int(row['pk']),
                         name = fd[k].get('name'),
                         jsondata = dict(
-                                url = fd[k].get('path'),
-                                thumbnail = tn,
-                                web = w,
+                                original = fd[k].get('path'),
+                                objid = oid,
+                                refobjid = refobjid,
+                                web = 'web.jpg',
+                                thumbnail = 'thumbnail.jpg',
                             ),
                         ord=i,
                         mime_type = mt,
