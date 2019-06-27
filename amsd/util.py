@@ -4,6 +4,7 @@ from __future__ import unicode_literals, print_function, division
 from clld.db.meta import DBSession
 from clld.db.models.common import Contributor, Source
 from clld.web.util.htmllib import HTML
+from clld.web.util.helpers import get_referents, link
 
 import amsd.models
 
@@ -27,6 +28,22 @@ def dataset_detail_html(context=None, request=None, **kw):
                     .filter(amsd.models.MessageStick.motifs != '')
                     .distinct().all()),
     }
+
+def source_detail_html(context=None, request=None, **kw):
+    return {'referents': get_referents(
+        context, exclude=['valueset', 'sentence', 'language'])}
+
+def amsd_linked_references(req, obj):
+    chunks = []
+    for ref in sorted(getattr(obj, 'references', []), key=lambda x: x.source.note or ''):
+        if ref.source:
+            ref.source.name = ref.source.note
+            chunks.append(HTML.li(
+                HTML.span(link(req, ref.source), class_='citation')
+            ))
+    if chunks:
+        return HTML.span(*chunks)
+    return ''
 
 def get_sem_domains(context=None, request=None, **kw):
     res = []

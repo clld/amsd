@@ -140,6 +140,14 @@ def main(args):
             notes = row['notes'],
             data_entry = row['data_entry'],
         )
+        if row['source_citation']:
+            for k in row['source_citation'].split(';'):
+                data.add(
+                    common.ContributionReference,
+                    k,
+                    contribution_pk = int(row['pk']),
+                    source_pk = int(k),
+                )
         if row['linked_filenames']:
             for i, k in enumerate(row['linked_filenames'].split(';')):
                 if k in fd:

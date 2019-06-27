@@ -119,8 +119,8 @@
 % if techniques:
     <p><b>Techniques: </b>${techniques|n}</p>
 % endif
-% if sources:
-    <p><b>Sources: </b>${sources|n}</p>
+% if ctx.references:
+    <p><b>Sources: </b>${u.amsd_linked_references(request, ctx)}</p>
 % endif
 % if source_types:
     <p><b>Source types: </b>${source_types|n}</p>

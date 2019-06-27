@@ -1,5 +1,5 @@
 from clld.web.datatables import (
-    Contributors, Contributions)
+    Contributors, Contributions, Sources)
 from clld.web.datatables.base import (
     Col, LinkCol, DetailsRowLinkCol)
 from clld.web.datatables.contributor import (
@@ -46,6 +46,14 @@ class AmsdLongTextFieldCol(Col):
             return ''
         return v[:100] + '...' if len(v) > 100 else v
 
+class AmsdSources(Sources):
+    def col_defs(self):
+        return [
+            LinkCol(self, 'name'),
+            Col(self, 'note'),
+        ]
+
 def includeme(config):
     config.register_datatable('contributors', AmsdContributors)
     config.register_datatable('contributions', AmsdContributions)
+    config.register_datatable('sources', AmsdSources)
