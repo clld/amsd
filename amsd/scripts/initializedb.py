@@ -121,7 +121,6 @@ def main(args):
             dim_3 = row['dim_3'],
             material = row['material'],
             technique = row['technique'],
-            source_citation = row['source_citation'],
             source_type = row['source_type'] or None,
             date_collected = row['date_collected'],
             holder_file_pk = row['holder_file'] or None,
@@ -140,6 +139,14 @@ def main(args):
             notes = row['notes'],
             data_entry = row['data_entry'],
         )
+        if row['source_citation']:
+            for k in row['source_citation'].split(';'):
+                data.add(
+                    common.ContributionReference,
+                    k,
+                    contribution_pk = int(row['pk']),
+                    source_pk = int(k),
+                )
         if row['linked_filenames']:
             for i, k in enumerate(row['linked_filenames'].split(';')):
                 if k in fd:
