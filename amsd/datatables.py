@@ -49,8 +49,7 @@ class AmsdLongTextFieldCol(Col):
 class AmsdSources(Sources):
     def col_defs(self):
         return [
-            LinkCol(self, 'name'),
-            Col(self, 'note'),
+            LinkCol(self, 'name', sTitle='Note'),
         ]
 
 class AmsdImages(DataTable):

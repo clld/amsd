@@ -67,7 +67,6 @@ def amsd_linked_references(req, obj):
     chunks = []
     for ref in sorted(getattr(obj, 'references', []), key=lambda x: x.source.note or ''):
         if ref.source:
-            ref.source.name = ref.source.note
             chunks.append(HTML.li(
                 HTML.span(link(req, ref.source), class_='citation')
             ))

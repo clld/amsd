@@ -63,7 +63,8 @@ def main(args):
             common.Source,
             row['pk'],
             id=row['pk'],
-            note=row['name']
+            note=row['name'],
+            name=row['name'],
         )
 
     for row in dicts('ling_area'):
