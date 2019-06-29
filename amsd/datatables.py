@@ -1,13 +1,13 @@
 from clld.web.datatables import (
     Contributors, Contributions, Sources)
 from clld.web.datatables.base import (
-    Col, LinkCol, DetailsRowLinkCol)
+    DataTable, Col, LinkCol, DetailsRowLinkCol)
 from clld.web.datatables.contributor import (
     ContributionsCol)
 from clld.web.datatables.contribution import (
     CitationCol, ContributorsCol)
 from clld.db.models.common import (
-    Contribution)
+    Contribution, Contribution_files)
 from amsd.models import (
     MessageStick)
 from clld.web.util.htmllib import HTML
@@ -36,7 +36,7 @@ class AmsdThumbnailCol(Col):
     __kw__ = dict(bSearchable=False, bSortable=False)
 
     def format(self, item):
-        return item.get_images()
+        return item.get_images(req=self.dt.req)
 
 
 class AmsdLongTextFieldCol(Col):
@@ -53,7 +53,15 @@ class AmsdSources(Sources):
             Col(self, 'note'),
         ]
 
+class AmsdImages(DataTable):
+    def col_defs(self):
+        return [
+            LinkCol(self, 'name'),
+            Col(self, 'mime_type', sTitle='type'),
+        ]
+
 def includeme(config):
     config.register_datatable('contributors', AmsdContributors)
     config.register_datatable('contributions', AmsdContributions)
     config.register_datatable('sources', AmsdSources)
+    config.register_datatable('images', AmsdImages)

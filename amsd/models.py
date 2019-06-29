@@ -118,12 +118,14 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     notes = Column(Unicode)
     data_entry = Column(Unicode)
 
-    def get_images(self, image_type='thumbnail', width='40'):
-        if not self.files:
+    def get_images(self, image_type='thumbnail', width='40', req=None):
+        if not self.files or not req:
             return ''
         res = []
         for k, f in self.files.items():
             if image_type in ['web', 'thumbnail']:
+                if image_type == 'web' and f.mime_type.startswith('video'):
+                    image_type = 'thumbnail'
                 res.append(
                     HTML.a(
                         HTML.img(
@@ -131,21 +133,9 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
                             width = '%spx' % (width) if width else 'auto',
                             class_='image_%s' % (image_type),
                         ),
-                        href = cdstar.bitstream_url(f) if not f.jsondata.get('refobjid') \
-                            else '%sbitstreams/%s/%s' % (
-                                cdstar.SERVICE_URL, f.jsondata.get('refobjid'), f.jsondata.get('original')),
+                        href='%s/%s' % (req.route_url('images'), f.id),
                         title = f.name,
                         target= '_new',
-                    )
-                )
-            else:
-                res.append(
-                    HTML.img(
-                        title = f.name,
-                        class_='image',
-                        src = cdstar.bitstream_url(f) if not f.jsondata.get('refobjid') \
-                            else '%sbitstreams/%s/%s' % (
-                                cdstar.SERVICE_URL, f.jsondata.get('refobjid'), f.jsondata.get('original')),
                     )
                 )
         return ''.join(res)
