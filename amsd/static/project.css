@@ -1,3 +1,19 @@
 .image_web, .image_thumbnail {
   margin: 2px;
 }
+
+.image_single {
+  height: auto;
+  width: auto;
+  margin: 5px;
+}
+
+.div_pdf_iframe {
+  height: 75vh;
+  border: none;
+}
+
+.pdf_iframe {
+  width: 100%;
+  height: 100%;
+}

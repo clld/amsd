@@ -39,7 +39,7 @@ ${ctx.coins(request)|n}
 </div>
 
 <%def name="sidebar()">
-    <% sticks, one_open = context.get('sticks', {}), False %>
+    <% referents, one_open = context.get('referents', {}), False %>
     <div class="accordion" id="sidebar-accordion">
     % if referents.get('contribution'):
         <%util:accordion_group eid="acc-c" parent="sidebar-accordion" title="${_('Contributions')}" open="${not one_open}">

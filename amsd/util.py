@@ -2,9 +2,11 @@
 from __future__ import unicode_literals, print_function, division
 
 from clld.db.meta import DBSession
-from clld.db.models.common import Contributor, Source
+from clld.db.models.common import Contributor, Source, Contribution, Contribution_files
 from clld.web.util.htmllib import HTML
 from clld.web.util.helpers import get_referents, link
+
+from clldmpg import cdstar
 
 import amsd.models
 
@@ -15,7 +17,7 @@ def contribution_detail_html(context=None, request=None, **kw):
         'materials': get_materials(context, request),
         'techniques': get_techniques(context, request),
         'source_types': get_source_types(context, request),
-        'linked_filename_urls': context.get_images('web', ''),
+        'linked_filename_urls': context.get_images(image_type='web', width='', req=request),
     }
 
 def dataset_detail_html(context=None, request=None, **kw):
@@ -32,11 +34,39 @@ def source_detail_html(context=None, request=None, **kw):
     return {'referents': get_referents(
         context, exclude=['valueset', 'sentence', 'language'])}
 
+def get_sticks(source):
+    res = {}
+    obj_pks = DBSession.query(Contribution_files.object_pk).filter(
+            Contribution_files.name == source.name).distinct().all()
+    q = DBSession.query(Contribution).filter(Contribution.pk.in_(obj_pks)).distinct()
+    res[Contribution.__name__.lower()] = q.all()
+    return res
+
+def image_detail_html(context=None, request=None, **kw):
+    referents = get_sticks(context)
+    if context.mime_type == 'application/pdf':
+        return {'referents': referents,
+                'image': HTML.div(
+                            HTML.iframe(
+                                class_='pdf_iframe',
+                                src='%sbitstreams/%s/%s' % (
+                                    cdstar.SERVICE_URL, context.jsondata.get('refobjid'), context.jsondata.get('original')),
+                                frameborder='0',
+                            ),
+                            class_='div_pdf_iframe',
+                        )}
+    else:
+        return {'referents': referents,
+                'image': HTML.img(
+                            class_='image_single',
+                            src = cdstar.bitstream_url(context),
+                        ),
+                    }
+
 def amsd_linked_references(req, obj):
     chunks = []
     for ref in sorted(getattr(obj, 'references', []), key=lambda x: x.source.note or ''):
         if ref.source:
-            ref.source.name = ref.source.note
             chunks.append(HTML.li(
                 HTML.span(link(req, ref.source), class_='citation')
             ))
