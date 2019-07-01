@@ -7,7 +7,7 @@ from clld.web.datatables.contributor import (
 from clld.web.datatables.contribution import (
     CitationCol, ContributorsCol)
 from clld.db.models.common import (
-    Contribution, Contribution_files)
+    Contribution)
 from amsd.models import (
     MessageStick)
 from clld.web.util.htmllib import HTML
