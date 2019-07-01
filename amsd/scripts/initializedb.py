@@ -128,7 +128,7 @@ def main(args):
             holder_obj_id = row['holder_obj_id'],
             collector = row['collector'],
             place_collected = row['place_collected'],
-            creator_coyright = row['creator_coyright'],
+            creator_copyright = row['creator_copyright'],
             file_copyright = row['file_copyright'],
             latitude = row['lat'] or None,
             longitude = row['long'] or None,

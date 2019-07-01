@@ -100,7 +100,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     holder_obj_id = Column(Unicode)
     collector = Column(Unicode)
     place_collected = Column(Unicode)
-    creator_coyright = Column(Unicode)
+    creator_copyright = Column(Unicode)
     file_copyright = Column(Unicode)
     latitude = Column(
         Float(),

@@ -18,3 +18,12 @@ ${image}
     % endif
     </div>
 </%def>
+<br /><br />
+%if referents.get('contribution'):
+    %if referents.get('contribution')[0].file_copyright:
+        <p><b>Media copyright: </b>${referents.get('contribution')[0].file_copyright}</p>
+    % endif
+    % if referents.get('contribution')[0].references:
+        <p><b>Sources: </b>${u.amsd_linked_references(request, referents.get('contribution')[0])}</p>
+    % endif
+% endif
