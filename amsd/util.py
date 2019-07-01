@@ -6,6 +6,9 @@ from clld.db.models.common import Contributor, Source, Contribution, Contributio
 from clld.web.util.htmllib import HTML
 from clld.web.util.helpers import get_referents, link
 
+from math import floor
+from six import text_type
+
 from clldmpg import cdstar
 
 import amsd.models
@@ -118,4 +121,19 @@ def get_data_entry(context=None, request=None, **kw):
         for f in DBSession.query(Contributor).filter(Contributor.id == r):
             res.append(HTML.a(f.name, href='%s/%s' % (request.route_url('contributors'), r)))
     return ', '.join(res)
+
+def degminsec(dec, hemispheres):
+    _dec = abs(dec)
+    degrees = int(floor(_dec))
+    _dec = (_dec - int(floor(_dec))) * 60
+    minutes = int(floor(_dec))
+    _dec = (_dec - int(floor(_dec))) * 60
+    seconds = _dec
+    fmt = "{0}\xb0"
+    if minutes:
+        fmt += "{1:0>2d}'"
+    if seconds:
+        fmt += '{2:0>2f}"'
+    fmt += hemispheres[0] if dec > 0 else hemispheres[1]
+    return text_type(fmt).format(degrees, minutes, seconds)
 

@@ -30,58 +30,46 @@
 % endif
 % if ctx.ling_area_1:
     <p><b>Linguistic area 1: </b>
-    % if ctx.ling_area_1.chirila_name:
-        <i>Chirila:</i> ${ctx.ling_area_1.chirila_name}
-    % endif
-    % if ctx.ling_area_1.austlang_code or ctx.austlang_name:
-        <i>Austlang:</i> 
-        %if ctx.ling_area_1.austlang_code:
-            ${ctx.ling_area_1.austlang_code}:
+        % if ctx.ling_area_1.chirila_name:
+            ${h.external_link('http://chirila.yale.edu/languages/'+ctx.ling_area_1.chirila_name, label='Chirila: '+ctx.ling_area_1.chirila_name)}
         % endif
-        %if ctx.ling_area_1.austlang_name:
-            ${ctx.ling_area_1.austlang_name}
+        % if ctx.ling_area_1.austlang_code or ctx.ling_area_1.austlang_name:
+            %if ctx.ling_area_1.austlang_code:
+                ${h.external_link('https://collection.aiatsis.gov.au/austlang/language/'+ctx.ling_area_1.austlang_code, label='Austlang: %s - %s' % (ctx.ling_area_1.austlang_code, ctx.ling_area_1.austlang_name))}
+            % endif
         % endif
-    % endif
-    % if ctx.ling_area_1.glottolog_code:
-        <i>Glottolog:</i> ${ctx.ling_area_1.glottolog_code}
-    % endif
+        % if ctx.ling_area_1.glottolog_code:
+            ${h.external_link('https://glottolog.org/resource/languoid/id/'+ctx.ling_area_1.glottolog_code, label='Glottolog: '+ctx.ling_area_1.glottolog_code)}
+        % endif
     </p>
 % endif
 % if ctx.ling_area_2:
     <p><b>Linguistic area 2: </b>
-    % if ctx.ling_area_1.chirila_name:
-        <i>Chirila:</i> ${ctx.ling_area_2.chirila_name}
-    % endif
-    % if ctx.ling_area_2.austlang_code or ctx.ling_area_2.austlang_name:
-        <i>Austlang:</i> 
-        %if ctx.ling_area_2.austlang_code:
-            ${ctx.ling_area_2.austlang_code}:
+        % if ctx.ling_area_2.chirila_name:
+            ${h.external_link('http://chirila.yale.edu/languages/'+ctx.ling_area_2.chirila_name, label='Chirila: '+ctx.ling_area_2.chirila_name)}
         % endif
-        %if ctx.ling_area_2.austlang_name:
-            ${ctx.ling_area_2.austlang_name}
+        % if ctx.ling_area_2.austlang_code or ctx.ling_area_2.austlang_name:
+            %if ctx.ling_area_2.austlang_code:
+                ${h.external_link('https://collection.aiatsis.gov.au/austlang/language/'+ctx.ling_area_2.austlang_code, label='Austlang: %s - %s' % (ctx.ling_area_2.austlang_code, ctx.ling_area_2.austlang_name))}
+            % endif
         % endif
-    % endif
-    % if ctx.ling_area_2.glottolog_code:
-        <i>Glottolog:</i> ${ctx.ling_area_2.glottolog_code}
-    % endif
+        % if ctx.ling_area_2.glottolog_code:
+            ${h.external_link('https://glottolog.org/resource/languoid/id/'+ctx.ling_area_2.glottolog_code, label='Glottolog: '+ctx.ling_area_2.glottolog_code)}
+        % endif
     </p>
 % endif
 % if ctx.ling_area_3:
     <p><b>Linguistic area 3: </b>
     % if ctx.ling_area_3.chirila_name:
-        <i>Chirila:</i> ${ctx.ling_area_3.chirila_name}
+        ${h.external_link('http://chirila.yale.edu/languages/'+ctx.ling_area_3.chirila_name, label='Chirila: '+ctx.ling_area_3.chirila_name)}
     % endif
     % if ctx.ling_area_3.austlang_code or ctx.ling_area_3.austlang_name:
-        <i>Austlang:</i> 
         %if ctx.ling_area_3.austlang_code:
-            ${ctx.ling_area_3.austlang_code}:
-        % endif
-        %if ctx.ling_area_3.austlang_name:
-            ${ctx.ling_area_3.austlang_name}
+            ${h.external_link('https://collection.aiatsis.gov.au/austlang/language/'+ctx.ling_area_3.austlang_code, label='Austlang: %s - %s' % (ctx.ling_area_3.austlang_code, ctx.ling_area_3.austlang_name))}
         % endif
     % endif
     % if ctx.ling_area_3.glottolog_code:
-        <i>Glottolog:</i> ${ctx.ling_area_3.glottolog_code}
+        ${h.external_link('https://glottolog.org/resource/languoid/id/'+ctx.ling_area_3.glottolog_code, label='Glottolog: '+ctx.ling_area_3.glottolog_code)}
     % endif
     </p>
 % endif
@@ -132,14 +120,59 @@
     <p><b>Institution/Holder file: </b>${ctx.holder_file}
 % endif
 % if ctx.holder_obj_id:
-     <b>object identifier: </b>${ctx.holder_obj_id}</p>
+    <b>object identifier: </b>${ctx.holder_obj_id}</p>
 % endif
-% if data_entry:
-    <p><b>Data Entry: </b>${data_entry|n}</p>
+% if ctx.collector:
+    <p><b>Collector: </b>${ctx.collector}</p>
+% endif
+% if ctx.place_collected:
+    <p><b>Place collected: </b>${ctx.place_collected}</p>
+% endif
+% if ctx.creator_copyright:
+    <p><b>Creator copyright: </b>${ctx.creator_copyright}</p>
+% endif
+% if ctx.file_copyright:
+    <p><b>Media copyright: </b>${ctx.file_copyright}</p>
+% endif
+% if ctx.latitude:
+    <p><b>Coordinates: </b>${u.degminsec(ctx.latitude, 'NS')},${u.degminsec(ctx.longitude, 'EW')}&nbsp;&nbsp;(${ctx.latitude}, ${ctx.longitude})
+% endif
+% if ctx.notes_coords:
+    <p><b>Notes on coordinates: </b>${ctx.notes_coords}</p>
+% endif
+% if ctx.url_institution:
+    <p><b>URL institution: </b>
+    % for url in ctx.url_institution.split('  '):
+        ${h.external_link(url, label=url)}
+    % endfor
+    </p>
+% endif
+% if ctx.url_source_1:
+    <p><b>URL source 1: </b>
+    % for url in ctx.url_source_1.split(' '):
+        ${h.external_link(url, label=url)}
+    % endfor
+    </p>
+% endif
+% if ctx.url_source_2:
+    <p><b>URL source 2: </b>
+    % for url in ctx.url_source_2.split(' '):
+        ${h.external_link(url, label=url)}
+    % endfor
+    </p>
+% endif
+% if ctx.irn:
+    <p><b>IRN: </b>${ctx.irn}</p>
+% endif
+% if ctx.notes:
+    <p><b>Notes: </b>${ctx.notes}</p>
 % endif
 % if linked_filename_urls:
     <p><b>Media Files:</b></p>
     <p>${linked_filename_urls|n}</p>
+% endif
+% if data_entry:
+    <p><b>Data Entry: </b>${data_entry|n}</p>
 % endif
 
 
