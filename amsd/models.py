@@ -24,6 +24,7 @@ from clld.db.models.common import (
 
 from clld.web.util.htmllib import HTML
 from clldmpg import cdstar
+from amsd import util
 
 # -----------------------------------------------------------------------------
 # specialized common mapper classes
@@ -47,6 +48,10 @@ class item_type(Base, IdNameDescriptionMixin):
 class material(Base, IdNameDescriptionMixin):
     pass
 
+class x_material(Base):
+    object_pk = Column(Integer, ForeignKey('contribution.pk'))
+    item_pk = Column(Integer, ForeignKey('material.pk'))
+
 class data_entry(Base, IdNameDescriptionMixin):
     pass
 
@@ -56,20 +61,35 @@ class holder_file(Base, IdNameDescriptionMixin):
 class sem_domain(Base, IdNameDescriptionMixin):
     pass
 
+class x_sem_domain(Base):
+    object_pk = Column(Integer, ForeignKey('contribution.pk'))
+    item_pk = Column(Integer, ForeignKey('sem_domain.pk'))
+
 class source_type(Base, IdNameDescriptionMixin):
     pass
+
+class x_source_type(Base):
+    object_pk = Column(Integer, ForeignKey('contribution.pk'))
+    item_pk = Column(Integer, ForeignKey('source_type.pk'))
 
 class technique(Base, IdNameDescriptionMixin):
     pass
 
+class x_technique(Base):
+    object_pk = Column(Integer, ForeignKey('contribution.pk'))
+    item_pk = Column(Integer, ForeignKey('technique.pk'))
+
 class keywords(Base, IdNameDescriptionMixin):
     pass
+
+class x_keywords(Base):
+    object_pk = Column(Integer, ForeignKey('contribution.pk'))
+    item_pk = Column(Integer, ForeignKey('keywords.pk'))
 
 @implementer(interfaces.IContribution)
 class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     pk = Column(Integer, ForeignKey('contribution.pk'), primary_key=True)
     title = Column(Unicode)
-    keyword = Column(Unicode)
     obj_creator = Column(Unicode)
     date_created = Column(Unicode)
     note_place_created = Column(Unicode)
@@ -87,13 +107,9 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     message = Column(Unicode)
     motifs = Column(Unicode)
     motif_transcription = Column(Unicode)
-    sem_domain = Column(Unicode)
     dim_1 = Column(Unicode)
     dim_2 = Column(Unicode)
     dim_3 = Column(Unicode)
-    material = Column(Unicode)
-    technique = Column(Unicode)
-    source_type = Column(Unicode)
     date_collected = Column(Unicode)
     holder_file_pk = Column(Integer, ForeignKey("holder_file.pk"))
     holder_file = relationship('holder_file', foreign_keys=[holder_file_pk])
@@ -117,6 +133,9 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     irn = Column(Unicode)
     notes = Column(Unicode)
     data_entry = Column(Unicode)
+
+    def get_x(self, model_name):
+        return util.get_x_data(model_name, self)
 
     def get_images(self, image_type='thumbnail', width='40', req=None):
         if not self.files or not req:

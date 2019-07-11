@@ -101,7 +101,6 @@ def main(args):
             row['pk'],
             id = row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
             title = row['title'],
-            keyword = row['keywords'],
             description = row['description'],
             obj_creator = row['obj_creator'],
             date_created = row['date_created'],
@@ -116,13 +115,9 @@ def main(args):
             message = row['message'],
             motifs = row['motifs'],
             motif_transcription = row['motif_transcription'],
-            sem_domain = row['sem_domain'],
             dim_1 = row['dim_1'],
             dim_2 = row['dim_2'],
             dim_3 = row['dim_3'],
-            material = row['material'],
-            technique = row['technique'],
-            source_type = row['source_type'] or None,
             date_collected = row['date_collected'],
             holder_file_pk = row['holder_file'] or None,
             holder_obj_id = row['holder_obj_id'],
@@ -174,6 +169,19 @@ def main(args):
                         ord=i,
                         mime_type = mt,
                     )
+
+    DBSession.flush()
+    for row in dicts('sticks'):
+        for t in ['sem_domain', 'material', 'source_type', 'technique', 'keywords']:
+            if row[t]:
+                for _, k in enumerate(row[t].split(';')):
+                    data.add(
+                        getattr(models, 'x_%s' % (t)),
+                        k,
+                        object_pk = int(row['pk']),
+                        item_pk = int(k),
+                    )
+
 
 
 def prime_cache(args):
