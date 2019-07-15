@@ -38,9 +38,20 @@ def contribution_detail_html(context=None, request=None, **kw):
     }
 
 def dataset_detail_html(context=None, request=None, **kw):
+    example_image_name = '20161106-ebay-s-l1600_0.jpg'
+    example = None
+    try:
+        example_context = DBSession.query(Contribution_files) \
+                    .filter(Contribution_files.name == example_image_name).all()[0]
+        example = {
+            'link_url': '%s/%s' % (request.route_url('images'), example_context.id),
+            'image_url': cdstar.bitstream_url(example_context)}
+    except:
+        pass
     return {
         'count_sticks': len(DBSession.query(amsd.models.MessageStick).all()),
         'count_ling_areas': len(DBSession.query(amsd.models.ling_area).all()),
+        'example': example,
         'count_terms': len(DBSession.query(
                 amsd.models.MessageStick.stick_term)
                     .filter(amsd.models.MessageStick.stick_term != '')
