@@ -33,8 +33,8 @@
             <td class="right">${count_ling_areas}</td>
         </tr>
         <tr>
-            <th>Motifs</th>
-            <td class="right">${count_motifs}</td>
+            <th>Terms for message stick</th>
+            <td class="right">${count_terms}</td>
         </tr>
         </tbody>
     </table>

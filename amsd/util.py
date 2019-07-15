@@ -41,9 +41,9 @@ def dataset_detail_html(context=None, request=None, **kw):
     return {
         'count_sticks': len(DBSession.query(amsd.models.MessageStick).all()),
         'count_ling_areas': len(DBSession.query(amsd.models.ling_area).all()),
-        'count_motifs': len(DBSession.query(
-                amsd.models.MessageStick.motifs)
-                    .filter(amsd.models.MessageStick.motifs != '')
+        'count_terms': len(DBSession.query(
+                amsd.models.MessageStick.stick_term)
+                    .filter(amsd.models.MessageStick.stick_term != '')
                     .distinct().all()),
     }
 
