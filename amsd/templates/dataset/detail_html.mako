@@ -1,27 +1,16 @@
 <%inherit file="../home_comp.mako"/>
 
-<h2>Welcome to the Australian Message Stick Database</h2>
-    <div class="fluid pull-right" style="padding: 20px; padding-bottom: 180px; text-align: center;">
-        <img width="280"
-             src="${request.static_url('amsd:static/amsd_logo.png')}"
-             class="image"/>
-    </div>
-
-<p class="lead">
-    Message sticks are carved graphic devices from Indigenous Australia, used to
-    facilitate long-distance communication. This database is a digital
-    repository of ${count_sticks} message sticks and associated metadata located in museums
-    across the world. It also stores photographs and sketches of messages that
-    are no longer extant. The database is searchable via 30 fields, including
-    linguistic area, semantic domain, motifs and source.
-</p>
-
-<div class="pull-left">
-    <h4>Example</h4>
-    <img width="180" height="180"
-             src="${request.static_url('amsd:static/1520350500.png')}" class="image"/>
-</div>
-<div class="pull-left">
+<div class="fluid pull-left" style="padding: 20px; padding-bottom: 0px; text-align: center;">
+    <img width="280"
+         src="${request.static_url('amsd:static/amsd_logo.png')}"
+         class="image"/>
+    % if example:
+        <h5>Example</h5>
+        <a href="${example['link_url']}">
+            <img width="250px" style="margin:30px"
+                 src="${example['image_url']}" class="image"/>
+        </a>
+    % endif
     <table class="table">
         <tbody>
         <tr>
@@ -33,29 +22,40 @@
             <td class="right">${count_ling_areas}</td>
         </tr>
         <tr>
-            <th>Motifs</th>
-            <td class="right">${count_motifs}</td>
+            <th>Terms for message stick</th>
+            <td class="right">${count_terms}</td>
         </tr>
         </tbody>
     </table>
 </div>
-<div class="span4 well well-small pull-right">
-    <h3>How to cite:</h3>
+<div class="span4 well well-small pull-right" style="width:25%">
+    <h4>How to cite:</h4>
     <p>
         Kelly, Piers (ed.). 2018. The Australian Message Stick Database
         (beta version)
     </p>
 </div>
 
-<div class="clearfix"></div>
+<h3 style="margin-top:40px">Welcome to the Australian Message Stick Database</h3>
 
-<p class="lead">
+<p class="lead" style="width:60%">
+    Message sticks are carved graphic devices from Indigenous Australia, used to
+    facilitate long-distance communication. This database is a digital
+    repository of ${count_sticks} message sticks and associated metadata located in museums
+    across the world. It also stores photographs and sketches of messages that
+    are no longer extant.
+</p>
+
+<p class="lead"><br />
     "The Australian Message Stick Database contains data licensed under various conditions
         depending on agreements with museums (see individual records for details). No restricted
         or sacred items are included. It has been developed by The Mint Research Group at
-        The Max Planck Institute for the Science of Human History."
+        The Max Planck Institute for the Science of Human History."<br />
         With the following sensitivity notice:
 </p>
+
+<div class="clearfix"></div>
+
 <h4>Sensitivity notice</h4>
 <h5>Artefacts and entries</h5>
 <p>Message sticks are public communication devices that go by many different names in Australian languages.
