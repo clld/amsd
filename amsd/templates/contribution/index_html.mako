@@ -10,6 +10,10 @@
 </%block>
 
 <h2>${title()}</h2>
+%if count_loc_note:
+    <i><small>${count_loc_note}</small></i>
+% endif
+${(map_ or request.map).render()}
 
 <div class="" style="padding: 0px 0px">
     <form>
@@ -24,6 +28,7 @@
 </div>
 
 <div class="clearfix"> </div>
+
 <div>
     ${ctx.render()}
 </div>

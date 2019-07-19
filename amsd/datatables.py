@@ -1,7 +1,8 @@
 from clld.web.datatables import (
     Contributors, Contributions, Sources)
 from clld.web.datatables.base import (
-    DataTable, Col, LinkCol, DetailsRowLinkCol)
+    DataTable, Col, LinkCol, DetailsRowLinkCol,
+    LinkToMapCol)
 from clld.web.datatables.contributor import (
     ContributionsCol)
 from clld.web.datatables.contribution import (
@@ -67,10 +68,9 @@ class AmsdContributions(Contributions):
             AmsdLongTextFieldCol(self, 'description', model_col=MessageStick.description),
             AmsdLongTextFieldCol(self, 'message', model_col=MessageStick.message),
             AmsdThumbnailCol(self, 'image', sTitle='Image'),
-            XCol(self, 'material'),
-            XCol(self, 'technique'),
             XCol(self, 'keywords'),
             DetailsRowLinkCol(self, 'more'),
+            LinkToMapCol(self, 'm'),
         ]
 
 class XCol(Col):
