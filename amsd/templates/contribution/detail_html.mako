@@ -3,7 +3,16 @@
 <%! active_menu_item = "contributions" %>
 
 <%block name="title">${_('Contribution')} ${ctx.id}</%block>
+
+% if ctx.latitude:
+<div class="well well-small pull-right" style="width:30%;padding:10px;margin-top:10px;margin-left:20px">
+    ${(map_ or request.map).render()}
+    ${h.format_coordinates(ctx)}
+</div>
+% endif
+
 <h2>${ctx.id}</h2>
+
 % if ctx.title:
     <p><b>Title: </b>${ctx.title}</p>
 % endif
@@ -128,14 +137,14 @@
 % if ctx.place_collected:
     <p><b>Place collected: </b>${ctx.place_collected}</p>
 % endif
+% if ctx.latitude:
+    <p><b>Coordinates: </b>${u.degminsec(ctx.latitude, 'NS')},${u.degminsec(ctx.longitude, 'EW')}&nbsp;&nbsp;(${ctx.latitude}, ${ctx.longitude})
+% endif
 % if ctx.creator_copyright:
     <p><b>Creator copyright: </b>${ctx.creator_copyright}</p>
 % endif
 % if ctx.file_copyright:
     <p><b>Media copyright: </b>${ctx.file_copyright}</p>
-% endif
-% if ctx.latitude:
-    <p><b>Coordinates: </b>${u.degminsec(ctx.latitude, 'NS')},${u.degminsec(ctx.longitude, 'EW')}&nbsp;&nbsp;(${ctx.latitude}, ${ctx.longitude})
 % endif
 % if ctx.notes_coords:
     <p><b>Notes on coordinates: </b>${ctx.notes_coords}</p>

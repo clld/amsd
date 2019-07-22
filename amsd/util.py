@@ -20,11 +20,19 @@ from clldmpg import cdstar
 import amsd.models
 
 def contribution_index_html(context=None, request=None, **kw):
+    q = DBSession.query(amsd.models.MessageStick)
+    c_all = q.count()
+    c_loc = q.filter(amsd.models.MessageStick.latitude != None).count()
+    c_note = None
+    if c_loc < c_all:
+        c_note = 'Note: only %i of %i message sticks have geographical coordinates' % (
+                    c_loc, c_all)
     return dict(
         select_sem_domain = XMultiSelect(context, request, 'sem_domain', 'ms-sem_domain'),
         select_material = XMultiSelect(context, request, 'material', 'ms-material'),
         select_technique = XMultiSelect(context, request, 'technique', 'ms-technique'),
         select_keywords = XMultiSelect(context, request, 'keywords', 'ms-keywords'),
+        count_loc_note = c_note,
     )
 
 def contribution_detail_html(context=None, request=None, **kw):

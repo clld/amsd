@@ -31,7 +31,7 @@ from amsd import util
 # -----------------------------------------------------------------------------
 @implementer(interfaces.ILanguage)
 class amsdLanguage(CustomModelMixin, Language):
-   pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
+    pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
 
 
 class ling_area(Base):
