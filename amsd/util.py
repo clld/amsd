@@ -11,7 +11,6 @@ from clld.db.models.common import (
 from clld.web.util.htmllib import HTML
 from clld.web.util.helpers import get_referents, link
 from clld.web.util.multiselect import MultiSelect
-from clld.web.util.component import Component
 
 from math import floor
 from six import text_type
