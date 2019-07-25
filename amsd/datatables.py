@@ -46,11 +46,6 @@ class AmsdContributions(Contributions):
                 setattr(self, c, req.params[c].split(','))
                 if len(getattr(self, c)) and not len(getattr(self, c)[0]):
                     setattr(self, c, None)
-        self.sf_global = None
-        if 'sf_global' in req.params:
-            self.sf_global = req.params['sf_global']
-            if not len(self.sf_global):
-                self.sf_global = None
 
     def base_query(self, query):
 
