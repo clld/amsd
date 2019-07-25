@@ -86,11 +86,8 @@ class AmsdContributions(Contributions):
 
 def get_ts_search_string(s_):
     """Converts a search string into a ts_query conform syntax
-    - a " " outside of double quotes will be replaced by " & "
-    - a " " inside of double quotes will be replaced by " <-> " for phrase search
-            and a ":*" (partial match from begin) will be added to the last token
-    - a :* will be append to each search term which is not inside double quotes
-            for partial matching ("starts with")
+    - a " " will be replaced by " & "
+    - a :* will be append to each search term for partial matching ("starts with")
     """
 
     # if any special character appear return None to let handle plainto_tsquery() the search
@@ -100,39 +97,17 @@ def get_ts_search_string(s_):
     # while creating tsvector _ and - were replaced by . to avoid tokenizing
     s = re.sub('[_\-]','.',s_).replace(',', ' ')
 
-    quote_cnt = s.count('"')
-    if quote_cnt == 0: # no quotes
-        search_items = set(nfilter(re.split(' +', s)))
-    elif quote_cnt % 2: # odd number of quotes -> no quotes
-        search_items = set(nfilter(re.split(' +', s.replace('"', ''))))
-    else:
-        search_items = set([a.strip().replace('"', '')\
-                for a in nfilter(re.split(' +(?=([^\"]*\"[^\"]*\")*[^\"]*$)', s))\
-                    if (a.startswith('"') and a.endswith('"'))\
-                            or (not a.startswith('"') and not a.endswith('"'))])
-
+    search_items = set(nfilter(re.split(' +', s.replace('"', ''))))
     search_items = nfilter([a.strip() for a in search_items])
 
-    ret = []
-    for a in search_items:
-        if ' ' in a: # => double quote token
-            a_ = re.split(' +', a)
-            a_l = len(a_)
-            if a_l > 1:
-                ret.append(' <-> '.join(a_))
-            elif a_l == 1:
-                ret.append('%s:*' % (a_[0]))
-        else:
-            ret.append('%s:*' % (a))
-
-    return ' & '.join(ret)
+    return ' & '.join(['%s:*' % (a) for a in search_items])
 
 class AmsdFtsCol(Col):
     __kw__ = dict(
         bSortable=False,
         sTitle='Any field',
         sDescription='Search in any field of the Message Stick record',
-        sTooltip='Search for terms, separated by spaces, in all text fields. A terms can be wrapped by double quotes for a phrase search. The search starts at the beginnings of words.')
+        sTooltip='Search for terms, separated by spaces, in all text fields. The search is word initial.')
 
     def format(self, item):
         return ''
