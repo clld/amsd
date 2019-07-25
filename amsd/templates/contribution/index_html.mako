@@ -23,10 +23,9 @@
 <div class="clearfix"> </div>
 
 <div class="well" style="padding: 0px 0px">
-    <form style="margin-bottom: -4px; margin-left:2px">
+    <form style="margin: 4px">
         <i>Pre-filtering of multiple shared values</i>
         <fieldset onchange="submit()">
-            <div class="pull-right" style="margin:5px"><b>Global search:</b><br />${search_global.render()}</div>
             <div class="pull-left" style="margin:5px"><b>Keywords:</b><br />${select_keywords.render()}</div>
             <div class="pull-left" style="margin:5px"><b>Semantic domains:</b><br />${select_sem_domain.render()}</div>
             <div class="pull-left" style="margin:5px"><b>Materials:</b><br />${select_material.render()}</div>

@@ -5,11 +5,12 @@ import mimetypes
 from collections import OrderedDict
 
 from clld.scripts.util import initializedb, Data
+from clld.db import fts
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clldutils.path import Path
 from clldutils.dsv import reader
-from clldutils.misc import slug
+from clldutils.misc import slug, nfilter
 
 import amsd
 from amsd import models
@@ -94,8 +95,76 @@ def main(args):
                 name = row['name'],
             )
 
+    DBSession.flush()
+
     # sticks => MessageStick
+    no_fts_cols = ['pk', 'latitude', 'longitude', 'item_type',
+        'irn', 'data_entry', 'dim_1', 'dim_2', 'dim_3', 'data_entry',
+        'ling_area_1', 'ling_area_2', 'ling_area_3', 'holder_file']
+    x_cols = ['sem_domain', 'material', 'source_type', 'technique', 'keywords', 'holder_file', 'item_type']
     for i, row in enumerate(dicts('sticks')):
+
+        fts_items = []
+        for col in row.keys():
+            if col == 'amsd_id':
+                fts_items.append(row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),)
+            elif col not in no_fts_cols and not col.endswith('_pk'):
+                fts_items.append(row[col])
+
+        for t in x_cols:
+            if row[t]:
+                for _, k in enumerate(row[t].split(';')):
+                    fts_items.append(str(data[t][k]))
+                    fts_items.extend(str(data[t][k]).split('_'))
+
+        for t in ['ling_area_1', 'ling_area_2', 'ling_area_3']:
+            if row[t]:
+                for _, k in enumerate(row[t].split(';')):
+                    fts_items.append(data['ling_area'][k].chirila_name)
+                    fts_items.append(data['ling_area'][k].austlang_code)
+                    fts_items.append(data['ling_area'][k].austlang_name)
+                    fts_items.append(data['ling_area'][k].glottolog_code)
+
+        if row['source_citation']:
+            for k in row['source_citation'].split(';'):
+                data.add(
+                    common.ContributionReference,
+                    k,
+                    contribution_pk = int(row['pk']),
+                    source_pk = int(k),
+                )
+                fts_items.append(str(data['Source'][k]))
+
+        if row['linked_filenames']:
+            for j, k in enumerate(row['linked_filenames'].split(';')):
+                if k in fd:
+                    oid = fd[k].get('oid')
+                    mt = fd[k].get('mimetype')
+                    refobjid = ''
+                    if mt == 'application/pdf':
+                        refobjid = oid
+                        # use for web, thumbnail a place holder image
+                        oid = 'EAEA0-52CC-0295-6B71-0'
+                    n = fd[k].get('name')
+                    data.add(
+                        common.Contribution_files,
+                        k,
+                        id='%s-%s-%i' % (k, row['pk'], j),
+                        object_pk = int(row['pk']),
+                        name = n,
+                        jsondata = dict(
+                                original = fd[k].get('path'),
+                                objid = oid,
+                                refobjid = refobjid,
+                                web = 'web.jpg',
+                                thumbnail = 'thumbnail.jpg',
+                            ),
+                        ord=j,
+                        mime_type = mt,
+                    )
+                    fts_items.append(n)
+                    fts_items.extend(nfilter(re.split('[_\-\.]', n)))
+
         data.add(
             models.MessageStick,
             row['pk'],
@@ -134,41 +203,8 @@ def main(args):
             irn = row['irn'],
             notes = row['notes'],
             data_entry = row['data_entry'],
+            fts = fts.tsvector('\n'.join(re.sub('[_\-]','.',v) for v in fts_items)),
         )
-        if row['source_citation']:
-            for k in row['source_citation'].split(';'):
-                data.add(
-                    common.ContributionReference,
-                    k,
-                    contribution_pk = int(row['pk']),
-                    source_pk = int(k),
-                )
-        if row['linked_filenames']:
-            for i, k in enumerate(row['linked_filenames'].split(';')):
-                if k in fd:
-                    oid = fd[k].get('oid')
-                    mt = fd[k].get('mimetype')
-                    refobjid = ''
-                    if mt == 'application/pdf':
-                        refobjid = oid
-                        # use for web, thumbnail a place holder image
-                        oid = 'EAEA0-52CC-0295-6B71-0'
-                    data.add(
-                        common.Contribution_files,
-                        k,
-                        id='%s-%s-%i' % (k, row['pk'], i),
-                        object_pk = int(row['pk']),
-                        name = fd[k].get('name'),
-                        jsondata = dict(
-                                original = fd[k].get('path'),
-                                objid = oid,
-                                refobjid = refobjid,
-                                web = 'web.jpg',
-                                thumbnail = 'thumbnail.jpg',
-                            ),
-                        ord=i,
-                        mime_type = mt,
-                    )
 
     DBSession.flush()
     for row in dicts('sticks'):

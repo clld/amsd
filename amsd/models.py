@@ -11,6 +11,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from clld import interfaces
 from clld.db.meta import Base, CustomModelMixin
@@ -133,6 +134,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     irn = Column(Unicode)
     notes = Column(Unicode)
     data_entry = Column(Unicode)
+    fts = Column(TSVECTOR)
 
     def get_x(self, model_name):
         return util.get_x_data(model_name, self)

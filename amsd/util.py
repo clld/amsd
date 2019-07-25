@@ -33,7 +33,6 @@ def contribution_index_html(context=None, request=None, **kw):
         select_material = XMultiSelect(context, request, 'material', 'ms-material'),
         select_technique = XMultiSelect(context, request, 'technique', 'ms-technique'),
         select_keywords = XMultiSelect(context, request, 'keywords', 'ms-keywords'),
-        search_global = GlobalSearchField(context, request),
         count_loc_note = c_note,
     )
 
@@ -166,28 +165,3 @@ class XMultiSelect(MultiSelect):
         return {
             'data': [self.format_result(p) for p in self.query(self.name)],
             'multiple': True}
-
-class GlobalSearchField(Component):
-
-    __template__ = 'amsd:templates/globalsearchfield.mako'
-
-    def __init__(self, ctx, req):
-
-        self.req = req
-        self.name = 'global'
-        self.query_name = 'sf_%s' % (self.name)
-        self.eid = self.query_name
-        if getattr(ctx, self.query_name):
-            self.value = getattr(ctx, self.query_name)
-        else:
-            self.value = ''
-
-    def get_default_options(self):
-        return {
-            'placeholder': "Search %s" % self.name,
-        }
-
-    def render(self, value=None):
-        if value:
-            self.value = value
-        return Component.render(self)
