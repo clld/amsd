@@ -119,7 +119,7 @@ def get_ts_search_string(s_):
             a_ = re.split(' +', a)
             a_l = len(a_)
             if a_l > 1:
-                ret.append(' <-> '.join(a_[:-1]) + ' <-> %s:*' % (a_[-1]))
+                ret.append(' <-> '.join(a_))
             elif a_l == 1:
                 ret.append('%s:*' % (a_[0]))
         else:
