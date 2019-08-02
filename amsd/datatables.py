@@ -52,10 +52,12 @@ class AmsdContributions(Contributions):
         contr_pks = set()
 
         # prefiltering
+        was_prefiltered = False
         prefilter_tables = ['sem_domain', 'material', 'technique', 'keywords']
         for c in prefilter_tables:
             v = getattr(self, c)
             if v:
+                was_prefiltered = True
                 cm = getattr(amsd.models, c)
                 xcm = getattr(amsd.models, 'x_%s' % (c))
                 qf = [cm.name == q for q in v]
@@ -65,7 +67,7 @@ class AmsdContributions(Contributions):
                     .having(func.count(xcm.object_pk) == len(qf)))
                 contr_pks = contr_pks & q if contr_pks else q
 
-        if contr_pks:
+        if was_prefiltered:
             query = query.filter(Contribution.pk.in_(contr_pks))
 
         return query.outerjoin(x_keywords, keywords).options(
