@@ -106,10 +106,11 @@ def main(args):
 
         fts_items = []
         for col in row.keys():
-            if col == 'amsd_id':
-                fts_items.append(row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),)
-            elif col not in no_fts_cols and not col.endswith('_pk'):
-                fts_items.append(row[col])
+            if col:
+                if col == 'amsd_id':
+                    fts_items.append(row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),)
+                elif col not in no_fts_cols and not col.endswith('_pk'):
+                    fts_items.append(row[col])
 
         for t in x_cols:
             if row[t]:
