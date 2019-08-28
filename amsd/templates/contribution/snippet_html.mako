@@ -5,6 +5,7 @@
     % if ctx.title:
         <p><b>Title: </b>${ctx.title}</p>
     % endif
+    ${u.get_popup_images(request, ctx)|n}
 % else:
     % if ctx.description:
         <p><b>Description: </b>${ctx.description}</p>
