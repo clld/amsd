@@ -110,6 +110,12 @@ def amsd_linked_references(req, obj):
         return HTML.span(*chunks)
     return ''
 
+def get_popup_images(req, obj):
+    imgs = obj.get_images(req=req, image_type='web')
+    if imgs:
+        return "%s<br /><br />" % (imgs)
+    return ""
+
 def get_x_data(model_name=None, context=None, request=None, **kw):
     m = getattr(amsd.models, model_name)
     x_m =  getattr(amsd.models, 'x_%s' % (model_name))
