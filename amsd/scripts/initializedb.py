@@ -9,7 +9,7 @@ from clld.db import fts
 from clld.db.meta import DBSession
 from clld.db.models import common
 from clldutils.path import Path
-from clldutils.dsv import reader
+from csvw.dsv import reader
 from clldutils.misc import slug, nfilter
 
 import amsd
