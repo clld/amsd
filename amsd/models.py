@@ -139,7 +139,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     def get_x(self, model_name):
         return util.get_x_data(model_name, self)
 
-    def get_images(self, image_type='thumbnail', width='40', req=None):
+    def get_images(self, image_type='thumbnail', width='50', req=None):
         if not self.files or not req:
             return ''
         res = []

@@ -76,11 +76,8 @@ class AmsdContributions(Contributions):
     def col_defs(self):
         return [
             LinkCol(self, 'id', model_col=Contribution.id),
-            Col(self, 'title', model_col=MessageStick.title),
-            AmsdLongTextFieldCol(self, 'description', model_col=MessageStick.description),
-            AmsdLongTextFieldCol(self, 'message', model_col=MessageStick.message),
+            AmsdLongTextFieldCol(self, 'title', model_col=MessageStick.title),
             AmsdThumbnailCol(self, 'image', sTitle='Image'),
-            XCol(self, 'keywords'),
             AmsdFtsCol(self, 'fts', model_col=MessageStick.fts),
             DetailsRowLinkCol(self, 'more'),
             LinkToMapCol(self, 'm'),
