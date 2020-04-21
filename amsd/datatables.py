@@ -1,32 +1,18 @@
-from clld.web.datatables import (
-    Contributors, Contributions, Sources)
-from clld.web.datatables.base import (
-    DataTable, Col, LinkCol, DetailsRowLinkCol,
-    LinkToMapCol)
-from clld.web.datatables.contributor import (
-    ContributionsCol)
-from clld.web.datatables.contribution import (
-    CitationCol, ContributorsCol)
-from clld.db.models.common import (
-    Contribution, Source, ContributionReference, Contribution_files)
+import re
+
+from clld.web.datatables import Contributors, Contributions, Sources
+from clld.web.datatables.base import DataTable, Col, LinkCol, DetailsRowLinkCol, LinkToMapCol
+from clld.web.datatables.contributor import ContributionsCol
+from clld.db.models.common import Contribution
 from clldutils.misc import nfilter
-from amsd.models import (
-    MessageStick,
-    sem_domain, x_sem_domain,
-    material, x_material,
-    technique, x_technique,
-    keywords, x_keywords,
-    ling_area, item_type,
-    holder_file, source_type, x_source_type)
-from clld.web.util.htmllib import HTML
+from amsd.models import MessageStick, keywords, x_keywords
 from clld.db.util import icontains
 
-from sqlalchemy import or_, and_, func
+from sqlalchemy import or_, func
 from sqlalchemy.orm import joinedload
 from clld.db.meta import DBSession
 
 import amsd.models
-import re
 
 
 class AmsdContributors(Contributors):
@@ -35,6 +21,7 @@ class AmsdContributors(Contributors):
             LinkCol(self, 'name'),
             ContributionsCol(self, 'Contributions', sTitle='Data set'),
         ]
+
 
 class AmsdContributions(Contributions):
     def __init__(self, req, *args, **kw):
@@ -48,9 +35,7 @@ class AmsdContributions(Contributions):
                     setattr(self, c, None)
 
     def base_query(self, query):
-
         contr_pks = set()
-
         # prefiltering
         was_prefiltered = False
         prefilter_tables = ['sem_domain', 'material', 'technique', 'keywords']
@@ -83,12 +68,12 @@ class AmsdContributions(Contributions):
             LinkToMapCol(self, 'm'),
         ]
 
+
 def get_ts_search_string(s_):
     """Converts a search string into a ts_query conform syntax
     - a " " will be replaced by " & "
     - a :* will be append to each search term for partial matching ("starts with")
     """
-
     # if any special character appear return None to let handle plainto_tsquery() the search
     if any(e in s_ for e in ["'",'*',':','&','|','(',')','!']):
         return None
@@ -98,8 +83,8 @@ def get_ts_search_string(s_):
 
     search_items = set(nfilter(re.split(' +', s.replace('"', ''))))
     search_items = nfilter([a.strip() for a in search_items])
-
     return ' & '.join(['%s:*' % (a) for a in search_items])
+
 
 class AmsdFtsCol(Col):
     __kw__ = dict(
@@ -123,10 +108,13 @@ class AmsdFtsCol(Col):
 class XCol(Col):
     def get_value(self, item):
         return item.get_x(self.name)
+
     def order(self):
         return getattr(amsd.models, self.name).name
+
     def search(self, qs):
         return icontains(getattr(amsd.models, self.name).name, qs)
+
 
 class AmsdThumbnailCol(Col):
     __kw__ = dict(bSearchable=False, bSortable=False)
@@ -142,11 +130,13 @@ class AmsdLongTextFieldCol(Col):
             return ''
         return v[:100] + '...' if len(v) > 100 else v
 
+
 class AmsdSources(Sources):
     def col_defs(self):
         return [
             LinkCol(self, 'name', sTitle='Note'),
         ]
+
 
 class AmsdImages(DataTable):
     def col_defs(self):
@@ -154,6 +144,7 @@ class AmsdImages(DataTable):
             LinkCol(self, 'name'),
             Col(self, 'mime_type', sTitle='type'),
         ]
+
 
 def includeme(config):
     config.register_datatable('contributors', AmsdContributors)

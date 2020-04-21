@@ -1,10 +1,8 @@
-# coding: utf8
-from __future__ import unicode_literals, print_function, division
+from math import floor
 
 from clld.db.meta import DBSession
 from clld.db.models.common import (
     Contributor,
-    Source,
     Contribution,
     Contribution_files,
 )
@@ -12,12 +10,10 @@ from clld.web.util.htmllib import HTML
 from clld.web.util.helpers import get_referents, link
 from clld.web.util.multiselect import MultiSelect
 
-from math import floor
-from six import text_type
-
 from clldmpg import cdstar
 
 import amsd.models
+
 
 def contribution_index_html(context=None, request=None, **kw):
     q = DBSession.query(amsd.models.MessageStick)
@@ -147,7 +143,8 @@ def degminsec(dec, hemispheres):
     if seconds:
         fmt += '{2:0>2f}"'
     fmt += hemispheres[0] if dec > 0 else hemispheres[1]
-    return text_type(fmt).format(degrees, minutes, seconds)
+    return str(fmt).format(degrees, minutes, seconds)
+
 
 class XMultiSelect(MultiSelect):
     def __init__(self, ctx, req, name, eid, **kw):

@@ -9,8 +9,6 @@ from sqlalchemy import (
     CheckConstraint,
 )
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import TSVECTOR
 
 from clld import interfaces
@@ -18,7 +16,6 @@ from clld.db.meta import Base, CustomModelMixin
 from clld.db.models.common import (
     Language,
     Contribution,
-    Contributor,
     IdNameDescriptionMixin,
     HasFilesMixin,
 )

@@ -13,8 +13,9 @@ _CONTRIBUTION_MAP_OPTIONS = {
     'show_labels': False,
 }
 
+
 class GeoJsonSelectedContributions(GeoJson):
-    def __init__(self, pk = None):
+    def __init__(self, pk=None):
         if pk:
             self.obj = DBSession.query(amsd.models.MessageStick)\
                 .filter(amsd.models.MessageStick.pk == pk)
@@ -26,9 +27,7 @@ class GeoJsonSelectedContributions(GeoJson):
         return self.obj.all()
 
     def featurecollection_properties(self, ctx, req):
-        return {
-            'layer': 'Message Sticks',
-        }
+        return {'layer': 'Message Sticks'}
 
     def feature_properties(self, ctx, req, valueset):
         return {
