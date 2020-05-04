@@ -78,8 +78,10 @@ def get_ts_search_string(s_):
     if any(e in s_ for e in ["'",'*',':','&','|','(',')','!']):
         return None
 
-    # while creating tsvector _ and - were replaced by . to avoid tokenizing
-    s = re.sub('[_\-]','.',s_).replace(',', ' ')
+    # while creating tsvector
+    # _ and - will be replaced by . to avoid tokenizing
+    # ,\t\r\n – will be replaced by 'space' to take them as search separator
+    s = re.sub(r'[,\t\r\n]', ' ', re.sub(r'[_\-]', '.', s_))
 
     search_items = set(nfilter(re.split(' +', s.replace('"', ''))))
     search_items = nfilter([a.strip() for a in search_items])
