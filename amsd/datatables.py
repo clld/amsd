@@ -46,10 +46,10 @@ class AmsdContributions(Contributions):
                 cm = getattr(amsd.models, c)
                 xcm = getattr(amsd.models, 'x_%s' % (c))
                 qf = [cm.name == q for q in v]
-                q = set(DBSession.query(xcm.object_pk) \
-                    .filter(xcm.item_pk.in_(DBSession.query(cm.pk).filter(or_(*qf)))) \
-                    .group_by(xcm.object_pk) \
-                    .having(func.count(xcm.object_pk) == len(qf)))
+                q = set(DBSession.query(xcm.object_pk)
+                        .filter(xcm.item_pk.in_(DBSession.query(cm.pk).filter(or_(*qf))))
+                        .group_by(xcm.object_pk)
+                        .having(func.count(xcm.object_pk) == len(qf)))
                 contr_pks = contr_pks & q if contr_pks else q
 
         if was_prefiltered:
@@ -75,7 +75,7 @@ def get_ts_search_string(s_):
     - a :* will be append to each search term for partial matching ("starts with")
     """
     # if any special character appear return None to let handle plainto_tsquery() the search
-    if any(e in s_ for e in ["'",'*',':','&','|','(',')','!']):
+    if any(e in s_ for e in ["'", '*', ':', '&', '|', '(', ')', '!']):
         return None
 
     # while creating tsvector
