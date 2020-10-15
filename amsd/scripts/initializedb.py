@@ -33,8 +33,8 @@ def main(args):
         name="AMSD",
         publisher_name="Max Planck Institute for the Science of Human History",
         publisher_place="Jena",
-        publisher_url="http://www.shh.mpg.de",
-        license="http://creativecommons.org/licenses/by/4.0/",
+        publisher_url="https://www.shh.mpg.de",
+        license="https://creativecommons.org/licenses/by/4.0/",
         domain='amsd.clld.org',
         contact='kelly@shh.mpg.de',
         jsondata={
@@ -84,10 +84,11 @@ def main(args):
                 name=row['name'],
                 oid=row['oid'],
                 path=row['path'],
-                mimetype=mimetypes.guess_type(row['path'])[0],
+                mimetype=mimetypes.guess_type(row['path'])[0] if row['path'] else None,
             )
 
-    for m in 'item_type technique keywords material source_type sem_domain holder_file'.split():
+    for m in 'item_type technique keywords material source_type '\
+            'sem_domain holder_file item_subtype cultural_region'.split():
         for row in dicts(m):
             data.add(
                 getattr(models, m),
@@ -101,7 +102,8 @@ def main(args):
     no_fts_cols = ['pk', 'latitude', 'longitude', 'item_type',
                    'irn', 'data_entry', 'dim_1', 'dim_2', 'dim_3', 'data_entry',
                    'ling_area_1', 'ling_area_2', 'ling_area_3', 'holder_file']
-    x_cols = ['sem_domain', 'material', 'source_type', 'technique', 'keywords', 'holder_file', 'item_type']
+    x_cols = ['sem_domain', 'material', 'source_type', 'technique', 'keywords',
+              'holder_file', 'item_type', 'item_subtype', 'cultural_region']
     for i, row in enumerate(dicts('sticks')):
 
         fts_items = []
@@ -177,6 +179,8 @@ def main(args):
             note_place_created=row['note_place_created'],
             place_created=row['place_created'],
             item_type_pk=row['item_type'] or None,
+            item_subtype_pk=row['item_subtype'] or None,
+            cultural_region_pk=row['cultural_region'] or None,
             ling_area_1_pk=row['ling_area_1'] or None,
             ling_area_2_pk=row['ling_area_2'] or None,
             ling_area_3_pk=row['ling_area_3'] or None,
@@ -204,7 +208,7 @@ def main(args):
             irn=row['irn'],
             notes=row['notes'],
             data_entry=row['data_entry'],
-            fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items)),
+            fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items if v)),
         )
 
     DBSession.flush()
