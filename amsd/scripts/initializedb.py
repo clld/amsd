@@ -84,7 +84,7 @@ def main(args):
                 name=row['name'],
                 oid=row['oid'],
                 path=row['path'],
-                mimetype=mimetypes.guess_type(row['path'])[0],
+                mimetype=mimetypes.guess_type(row['path'])[0] if row['path'] else None,
             )
 
     for m in 'item_type technique keywords material source_type sem_domain holder_file'.split():
@@ -204,7 +204,7 @@ def main(args):
             irn=row['irn'],
             notes=row['notes'],
             data_entry=row['data_entry'],
-            fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items)),
+            fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items if v)),
         )
 
     DBSession.flush()
