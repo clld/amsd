@@ -33,8 +33,8 @@ def main(args):
         name="AMSD",
         publisher_name="Max Planck Institute for the Science of Human History",
         publisher_place="Jena",
-        publisher_url="http://www.shh.mpg.de",
-        license="http://creativecommons.org/licenses/by/4.0/",
+        publisher_url="https://www.shh.mpg.de",
+        license="https://creativecommons.org/licenses/by/4.0/",
         domain='amsd.clld.org',
         contact='kelly@shh.mpg.de',
         jsondata={
