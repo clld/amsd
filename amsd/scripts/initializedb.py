@@ -1,10 +1,9 @@
-from __future__ import unicode_literals
 import sys
 import re
 import mimetypes
 from collections import OrderedDict
 
-from clld.scripts.util import initializedb, Data
+from clld.cliutil import Data
 from clld.db import fts
 from clld.db.meta import DBSession
 from clld.db.models import common
@@ -17,11 +16,13 @@ from amsd import models
 
 data_file_path = Path(amsd.__file__).parent / '../..' / 'amsd-data'
 
+
 def dicts(name):
     res = []
     for item in reader(data_file_path / 'raw/{0}.csv'.format(name), dicts=True):
         res.append(item)
     return res
+
 
 def main(args):
 
@@ -45,8 +46,7 @@ def main(args):
     editors = OrderedDict([('Piers Kelly', None)])
 
     # data_entry => Contributor
-    for row in sorted(dicts('data_entry'), key=lambda x: [
-                x['name'].lower()] ):
+    for row in sorted(dicts('data_entry'), key=lambda x: [x['name'].lower()]):
         if row['name'] in editors:
             editors[row['name']] = row['pk']
         data.add(
@@ -72,19 +72,19 @@ def main(args):
         data.add(
             models.ling_area,
             row['pk'],
-            chirila_name = row['chirila_name'],
-            austlang_code = row['austlang_code'],
-            austlang_name = row['austlang_name'],
-            glottolog_code = row['glottolog_code'],
+            chirila_name=row['chirila_name'],
+            austlang_code=row['austlang_code'],
+            austlang_name=row['austlang_name'],
+            glottolog_code=row['glottolog_code'],
         )
     fd = {}
     for row in dicts('linked_filenames'):
         if row['name'] not in ['00-Text_reference.png', '00-No_image_available.png']:
             fd[row['pk']] = dict(
-                name = row['name'],
-                oid = row['oid'],
-                path = row['path'],
-                mimetype = mimetypes.guess_type(row['path'])[0],
+                name=row['name'],
+                oid=row['oid'],
+                path=row['path'],
+                mimetype=mimetypes.guess_type(row['path'])[0],
             )
 
     for m in 'item_type technique keywords material source_type sem_domain holder_file'.split():
@@ -92,15 +92,15 @@ def main(args):
             data.add(
                 getattr(models, m),
                 row['pk'],
-                name = row['name'],
+                name=row['name'],
             )
 
     DBSession.flush()
 
     # sticks => MessageStick
     no_fts_cols = ['pk', 'latitude', 'longitude', 'item_type',
-        'irn', 'data_entry', 'dim_1', 'dim_2', 'dim_3', 'data_entry',
-        'ling_area_1', 'ling_area_2', 'ling_area_3', 'holder_file']
+                   'irn', 'data_entry', 'dim_1', 'dim_2', 'dim_3', 'data_entry',
+                   'ling_area_1', 'ling_area_2', 'ling_area_3', 'holder_file']
     x_cols = ['sem_domain', 'material', 'source_type', 'technique', 'keywords', 'holder_file', 'item_type']
     for i, row in enumerate(dicts('sticks')):
 
@@ -131,8 +131,8 @@ def main(args):
                 data.add(
                     common.ContributionReference,
                     k,
-                    contribution_pk = int(row['pk']),
-                    source_pk = int(k),
+                    contribution_pk=int(row['pk']),
+                    source_pk=int(k),
                 )
                 fts_items.append(str(data['Source'][k]))
 
@@ -151,60 +151,60 @@ def main(args):
                         common.Contribution_files,
                         k,
                         id='%s-%s-%i' % (k, row['pk'], j),
-                        object_pk = int(row['pk']),
-                        name = n,
-                        jsondata = dict(
-                                original = fd[k].get('path'),
-                                objid = oid,
-                                refobjid = refobjid,
-                                web = 'web.jpg',
-                                thumbnail = 'thumbnail.jpg',
-                            ),
+                        object_pk=int(row['pk']),
+                        name=n,
+                        jsondata=dict(
+                            original=fd[k].get('path'),
+                            objid=oid,
+                            refobjid=refobjid,
+                            web='web.jpg',
+                            thumbnail='thumbnail.jpg',
+                        ),
                         ord=j,
-                        mime_type = mt,
+                        mime_type=mt,
                     )
                     fts_items.append(n)
-                    fts_items.extend(nfilter(re.split('[_\-\.]', n)))
+                    fts_items.extend(nfilter(re.split(r'[_\-\.]', n)))
 
         data.add(
             models.MessageStick,
             row['pk'],
-            id = row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
-            title = row['title'],
-            description = row['description'],
-            obj_creator = row['obj_creator'],
-            date_created = row['date_created'],
-            note_place_created = row['note_place_created'],
-            place_created = row['place_created'],
-            item_type_pk = row['item_type'] or None,
-            ling_area_1_pk = row['ling_area_1'] or None,
-            ling_area_2_pk = row['ling_area_2'] or None,
-            ling_area_3_pk = row['ling_area_3'] or None,
-            notes_ling_area = row['notes_ling_area'],
-            stick_term = row['stick_term'],
-            message = row['message'],
-            motifs = row['motifs'],
-            motif_transcription = row['motif_transcription'],
-            dim_1 = row['dim_1'],
-            dim_2 = row['dim_2'],
-            dim_3 = row['dim_3'],
-            date_collected = row['date_collected'],
-            holder_file_pk = row['holder_file'] or None,
-            holder_obj_id = row['holder_obj_id'],
-            collector = row['collector'],
-            place_collected = row['place_collected'],
-            creator_copyright = row['creator_copyright'],
-            file_copyright = row['file_copyright'],
-            latitude = row['lat'] or None,
-            longitude = row['long'] or None,
-            notes_coords = row['notes_coords'],
-            url_institution = row['url_institution'],
-            url_source_1 = row['url_source_1'],
-            url_source_2 = row['url_source_2'],
-            irn = row['irn'],
-            notes = row['notes'],
-            data_entry = row['data_entry'],
-            fts = fts.tsvector('\n'.join(re.sub('[_\-]','.',v) for v in fts_items)),
+            id=row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
+            title=row['title'],
+            description=row['description'],
+            obj_creator=row['obj_creator'],
+            date_created=row['date_created'],
+            note_place_created=row['note_place_created'],
+            place_created=row['place_created'],
+            item_type_pk=row['item_type'] or None,
+            ling_area_1_pk=row['ling_area_1'] or None,
+            ling_area_2_pk=row['ling_area_2'] or None,
+            ling_area_3_pk=row['ling_area_3'] or None,
+            notes_ling_area=row['notes_ling_area'],
+            stick_term=row['stick_term'],
+            message=row['message'],
+            motifs=row['motifs'],
+            motif_transcription=row['motif_transcription'],
+            dim_1=row['dim_1'],
+            dim_2=row['dim_2'],
+            dim_3=row['dim_3'],
+            date_collected=row['date_collected'],
+            holder_file_pk=row['holder_file'] or None,
+            holder_obj_id=row['holder_obj_id'],
+            collector=row['collector'],
+            place_collected=row['place_collected'],
+            creator_copyright=row['creator_copyright'],
+            file_copyright=row['file_copyright'],
+            latitude=row['lat'] or None,
+            longitude=row['long'] or None,
+            notes_coords=row['notes_coords'],
+            url_institution=row['url_institution'],
+            url_source_1=row['url_source_1'],
+            url_source_2=row['url_source_2'],
+            irn=row['irn'],
+            notes=row['notes'],
+            data_entry=row['data_entry'],
+            fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items)),
         )
 
     DBSession.flush()
@@ -215,10 +215,9 @@ def main(args):
                     data.add(
                         getattr(models, 'x_%s' % (t)),
                         k,
-                        object_pk = int(row['pk']),
-                        item_pk = int(k),
+                        object_pk=int(row['pk']),
+                        item_pk=int(k),
                     )
-
 
 
 def prime_cache(args):

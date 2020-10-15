@@ -24,9 +24,7 @@ from clld.web.util.htmllib import HTML
 from clldmpg import cdstar
 from amsd import util
 
-# -----------------------------------------------------------------------------
-# specialized common mapper classes
-# -----------------------------------------------------------------------------
+
 @implementer(interfaces.ILanguage)
 class amsdLanguage(CustomModelMixin, Language):
     pk = Column(Integer, ForeignKey('language.pk'), primary_key=True)
@@ -43,46 +41,59 @@ class ling_area(Base):
 class item_type(Base, IdNameDescriptionMixin):
     pass
 
+
 class material(Base, IdNameDescriptionMixin):
     pass
+
 
 class x_material(Base):
     object_pk = Column(Integer, ForeignKey('contribution.pk'))
     item_pk = Column(Integer, ForeignKey('material.pk'))
 
+
 class data_entry(Base, IdNameDescriptionMixin):
     pass
+
 
 class holder_file(Base, IdNameDescriptionMixin):
     pass
 
+
 class sem_domain(Base, IdNameDescriptionMixin):
     pass
+
 
 class x_sem_domain(Base):
     object_pk = Column(Integer, ForeignKey('contribution.pk'))
     item_pk = Column(Integer, ForeignKey('sem_domain.pk'))
 
+
 class source_type(Base, IdNameDescriptionMixin):
     pass
+
 
 class x_source_type(Base):
     object_pk = Column(Integer, ForeignKey('contribution.pk'))
     item_pk = Column(Integer, ForeignKey('source_type.pk'))
 
+
 class technique(Base, IdNameDescriptionMixin):
     pass
+
 
 class x_technique(Base):
     object_pk = Column(Integer, ForeignKey('contribution.pk'))
     item_pk = Column(Integer, ForeignKey('technique.pk'))
 
+
 class keywords(Base, IdNameDescriptionMixin):
     pass
+
 
 class x_keywords(Base):
     object_pk = Column(Integer, ForeignKey('contribution.pk'))
     item_pk = Column(Integer, ForeignKey('keywords.pk'))
+
 
 @implementer(interfaces.IContribution)
 class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
@@ -147,13 +158,13 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
                 res.append(
                     HTML.a(
                         HTML.img(
-                            src = cdstar.bitstream_url(f, image_type),
-                            width = '%spx' % (width) if width else 'auto',
+                            src=cdstar.bitstream_url(f, image_type),
+                            width='%spx' % (width) if width else 'auto',
                             class_='image_%s' % (image_type),
                         ),
                         href='%s/%s' % (req.route_url('images'), f.id),
-                        title = f.name,
-                        target= '_new',
+                        title=f.name,
+                        target='_new',
                     )
                 )
         return ''.join(res)

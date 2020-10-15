@@ -21,7 +21,7 @@ class GeoJsonSelectedContributions(GeoJson):
                 .filter(amsd.models.MessageStick.pk == pk)
         else:
             self.obj = DBSession.query(amsd.models.MessageStick)\
-                .filter(amsd.models.MessageStick.latitude != None)
+                .filter(amsd.models.MessageStick.latitude is not None)
 
     def feature_iterator(self, ctx, req):
         return self.obj.all()
@@ -48,7 +48,7 @@ class SelectedContributionsMap(Map):
         yield Layer(
             self.req.translate('Contributions'),
             self.req.translate('Contributions'),
-            GeoJsonSelectedContributions()\
+            GeoJsonSelectedContributions()
                 .render(self.ctx, self.req, dump=False),
         )
 
@@ -66,7 +66,7 @@ class SelectedContributionMap(Map):
         yield Layer(
             self.req.translate('Contribution'),
             self.req.translate('Contribution'),
-            GeoJsonSelectedContributions(self.ctx.pk)\
+            GeoJsonSelectedContributions(self.ctx.pk)
                 .render(self.ctx, self.req, dump=False))
 
 
