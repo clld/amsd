@@ -42,6 +42,14 @@ class item_type(Base, IdNameDescriptionMixin):
     pass
 
 
+class item_subtype(Base, IdNameDescriptionMixin):
+    pass
+
+
+class cultural_region(Base, IdNameDescriptionMixin):
+    pass
+
+
 class material(Base, IdNameDescriptionMixin):
     pass
 
@@ -105,6 +113,10 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     place_created = Column(Unicode)
     item_type_pk = Column(Integer, ForeignKey("item_type.pk"))
     item_type = relationship(item_type, backref='item_type')
+    item_subtype_pk = Column(Integer, ForeignKey("item_subtype.pk"))
+    item_subtype = relationship(item_subtype, backref='item_subtype')
+    cultural_region_pk = Column(Integer, ForeignKey("cultural_region.pk"))
+    cultural_region = relationship(cultural_region, backref='cultural_region')
     ling_area_1_pk = Column(Integer, ForeignKey("ling_area.pk"))
     ling_area_2_pk = Column(Integer, ForeignKey("ling_area.pk"))
     ling_area_3_pk = Column(Integer, ForeignKey("ling_area.pk"))

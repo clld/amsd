@@ -37,6 +37,9 @@
 % if ctx.item_type:
     <p><b>Item type: </b>${ctx.item_type}</p>
 % endif
+% if ctx.item_subtype:
+    <p><b>Subtype: </b>${ctx.item_subtype}</p>
+% endif
 % if ctx.ling_area_1:
     <p><b>Linguistic area 1: </b>
         % if ctx.ling_area_1.chirila_name:
@@ -84,6 +87,9 @@
 % endif
 % if ctx.notes_ling_area:
     <p><b>Notes on linguistic areas: </b>${ctx.notes_ling_area}</p>
+% endif
+% if ctx.cultural_region:
+    <p><b>Cultural region: </b>${ctx.cultural_region}</p>
 % endif
 % if ctx.stick_term:
     <p><b>Term for 'message stick' (or related) in language: </b>${ctx.stick_term}</p>
