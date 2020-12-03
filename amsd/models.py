@@ -156,11 +156,8 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     data_entry = Column(Unicode)
     fts = Column(TSVECTOR)
 
-    def get_x(self, model_name):
-        return util.get_x_data(model_name, self)
-
     def get_images(self, image_type='thumbnail', width='50', req=None):
-        if not self.files or not req:
+        if not self.files or not req:  # pragma: no cover
             return ''
         res = []
         for k, f in self.files.items():
