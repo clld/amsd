@@ -6,6 +6,7 @@ from clld.db.models.common import (
     Contribution,
     Contribution_files,
 )
+from clld.web.util.component import Component
 from clld.web.util.htmllib import HTML
 from clld.web.util.helpers import get_referents, link
 from clld.web.util.multiselect import MultiSelect
@@ -23,13 +24,17 @@ def contribution_index_html(context=None, request=None, **kw):
     if c_loc < c_all:
         c_note = 'Note: only %i of %i message sticks have geographical coordinates' % (
             c_loc, c_all)
-    return dict(
+    ret = dict(
         select_sem_domain=XMultiSelect(context, request, 'sem_domain', 'ms-sem_domain'),
-        select_material=XMultiSelect(context, request, 'material', 'ms-material'),
-        select_technique=XMultiSelect(context, request, 'technique', 'ms-technique'),
         select_keywords=XMultiSelect(context, request, 'keywords', 'ms-keywords'),
         count_loc_note=c_note,
     )
+    rfs = []
+    if hasattr(context, 'remote_fields'):
+        for si in context.remote_fields:
+            rfs.append(RemoteSearchField(context, si))
+    ret['remotefields'] = rfs
+    return ret
 
 
 def contribution_detail_html(context=None, request=None, **kw):
@@ -52,7 +57,7 @@ def dataset_detail_html(context=None, request=None, **kw):
         example = {
             'link_url': '%s/%s' % (request.route_url('images'), example_context.id),
             'image_url': cdstar.bitstream_url(example_context)}
-    except:
+    except IndexError:  # pragma: no cover
         pass
     return {
         'count_sticks': len(DBSession.query(amsd.models.MessageStick).all()),
@@ -92,6 +97,16 @@ def image_detail_html(context=None, request=None, **kw):
                     ),
                     class_='div_pdf_iframe',
                 )}
+    if context.mime_type == 'video/mp4':
+        return {
+            'referents': referents,
+            'image': HTML.video(
+                HTML.source(
+                    src=cdstar.bitstream_url(context),
+                ),
+                class_='image_single',
+                controls_='',
+            )}
     else:
         return {
             'referents': referents,
@@ -109,14 +124,14 @@ def amsd_linked_references(req, obj):
             ))
     if chunks:
         return HTML.span(*chunks)
-    return ''
+    return ''  # pragma: no cover
 
 
 def get_popup_images(req, obj):
     imgs = obj.get_images(req=req, image_type='web')
     if imgs:
         return "%s<br /><br />" % (imgs)
-    return ""
+    return ''  # pragma: no cover
 
 
 def get_x_data(model_name=None, context=None, request=None, **kw):
@@ -131,7 +146,7 @@ def get_x_data(model_name=None, context=None, request=None, **kw):
 
 def get_data_entry(context=None, request=None, **kw):
     res = []
-    if not context.data_entry:
+    if not context.data_entry:  # pragma: no cover
         return None
     for r in context.data_entry.split(';'):
         for f in DBSession.query(Contributor).filter(Contributor.id == r):
@@ -153,6 +168,32 @@ def degminsec(dec, hemispheres):
         fmt += '{2:0>2f}"'
     fmt += hemispheres[0] if dec > 0 else hemispheres[1]
     return str(fmt).format(degrees, minutes, seconds)
+
+
+class RemoteSearchField(Component):
+    """
+    Component that remotes the filter input field of
+    that datatable column whose index is passed as 'colindex'.
+    The search will be performed onsubmit (not onchange) to
+    persist page search status.
+    """
+
+    __template__ = 'amsd:templates/remote_search_field.mako'
+
+    def __init__(self, ctx, colindex, placeholder=None, **kw):
+        self.searchindex = 'sSearch_{0}'.format(colindex)
+        self.col_name = ctx.col_defs()[colindex].name
+        self.remote_name = '{0}_remote'.format(self.col_name)
+        self.label = self.col_name.title().replace('_', ' ')
+        self.description = ctx.col_defs()[colindex].js_args.get('sDescription', '')
+        self.placeholder = placeholder if placeholder else self.col_name.replace('_', ' ')
+        self.value = ",".join(getattr(ctx, self.searchindex))\
+            if getattr(ctx, self.searchindex) is not None else ''
+
+    def get_default_options(self):
+        return {
+            'placeholder': "Search {0}".format(self.placeholder),
+        }
 
 
 class XMultiSelect(MultiSelect):

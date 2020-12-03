@@ -22,15 +22,35 @@
 
 <div class="clearfix"> </div>
 
-<div class="well" style="padding: 0px 0px">
-    <form style="margin: 4px">
-        <i>Pre-filtering of multiple shared values</i>
-        <fieldset onchange="submit()">
-            <div class="pull-left" style="margin:5px"><b>Keywords:</b><br />${select_keywords.render()}</div>
+<div class="pull-left well" style="margin-top: -14px; padding: 5px 5px">
+    <form id="prefilter-form">
+        % if len(remotefields):
+          <div class="pull-left">
+            <i>Pre-filtering</i>
+            <fieldset>
+              % for rf in remotefields:
+                <div class="pull-left select2-container select2-container-multi" style="margin:5px"><b>${rf.label}: </b>
+                  % if rf.description:
+                    <i title="${rf.description}" class="icon-info-sign"></i>
+                  % endif
+                  <br />
+                  <ul class="select2-choices"><li class="select2-search-field">${rf.render()}</li></ul>
+                </div>
+              % endfor
+              <div class="pull-left select2-container select2-container-multi" style="margin:5px;"><b>&nbsp;</b>
+                <br />
+                <button onclick="$('#prefilter-form').submit()" style="padding: 7px 7px"><i class="icon-search"></i></button>
+              </div>
+            </fieldset>
+          </div>
+        % endif
+        <div class="pull-left">
+          <i>Pre-filtering of multiple shared values</i>
+          <fieldset onchange="submit()">
             <div class="pull-left" style="margin:5px"><b>Semantic domains:</b><br />${select_sem_domain.render()}</div>
-            <div class="pull-left" style="margin:5px"><b>Materials:</b><br />${select_material.render()}</div>
-            <div class="pull-left" style="margin:5px"><b>Techniques:</b><br />${select_technique.render()}</div>
-        </fieldset>
+            <div class="pull-left" style="margin:5px"><b>Keywords:</b><br />${select_keywords.render()}</div>
+          </fieldset>
+        </div>
     </form>
 </div>
 
