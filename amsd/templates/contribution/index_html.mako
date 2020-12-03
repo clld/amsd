@@ -39,7 +39,7 @@
               % endfor
               <div class="pull-left select2-container select2-container-multi" style="margin:5px;"><b>&nbsp;</b>
                 <br />
-                <button onclick="$('#prefilter-form').submit()" style="padding: 7px 7px"><i class="icon-search"></i></button>
+                <button onclick="$('#prefilter-form').submit()" style="height: 34px"><i class="icon-search"></i></button>
               </div>
             </fieldset>
           </div>
@@ -59,6 +59,8 @@
 <div id="table-container">
     ${ctx.render()}
 </div>
+
+<div class="clearfix"> </div>
 
 <div id="map-container" style="margin-top:20px">
     %if count_loc_note:
