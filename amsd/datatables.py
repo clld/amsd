@@ -26,8 +26,12 @@ class AmsdContributors(Contributors):
 class AmsdContributions(Contributions):
     def __init__(self, req, *args, **kw):
         Contributions.__init__(self, req, *args, **kw)
+
+        # define which datatable column should be appear for prefiltering
+        self.remote_fields = [5, 6]
+
         # init prefilters
-        for c in ['sem_domain', 'material', 'technique', 'keywords']:
+        for c in ['sem_domain', 'keywords'] + ['sSearch_{0}'.format(i) for i in self.remote_fields]:
             setattr(self, c, None)
             if c in req.params:
                 setattr(self, c, req.params[c].split(','))
@@ -38,7 +42,7 @@ class AmsdContributions(Contributions):
         contr_pks = set()
         # prefiltering
         was_prefiltered = False
-        prefilter_tables = ['sem_domain', 'material', 'technique', 'keywords']
+        prefilter_tables = ['sem_domain', 'keywords']
         for c in prefilter_tables:
             v = getattr(self, c)
             if v:
@@ -63,9 +67,10 @@ class AmsdContributions(Contributions):
             LinkCol(self, 'id', model_col=Contribution.id),
             AmsdLongTextFieldCol(self, 'title', model_col=MessageStick.title),
             AmsdThumbnailCol(self, 'image', sTitle='Image'),
-            AmsdFtsCol(self, 'fts', model_col=MessageStick.fts),
             DetailsRowLinkCol(self, 'more'),
             LinkToMapCol(self, 'm'),
+            AmsdFtsCol(self, 'any_text_field', model_col=MessageStick.fts),
+            Col(self, 'message', model_col=MessageStick.message, bVisible=False),
         ]
 
 
@@ -90,10 +95,12 @@ def get_ts_search_string(s_):
 
 class AmsdFtsCol(Col):
     __kw__ = dict(
+        sDescription="Search for terms, separated by spaces, in all text fields. "
+        "The search is word initial, it ignores English stop words like "
+        "'a', 'from', 'the', etc., and it includes English inflection.",
         bSortable=False,
-        sTitle='Any field',
-        sDescription='Search in any field of the Message Stick record',
-        sTooltip='Search for terms, separated by spaces, in all text fields. The search is word initial.')
+        bVisible=False,
+        bSearchable=False)
 
     def format(self, item):
         return ''
@@ -107,17 +114,6 @@ class AmsdFtsCol(Col):
         return self.model_col.op('@@')(query)
 
 
-class XCol(Col):
-    def get_value(self, item):
-        return item.get_x(self.name)
-
-    def order(self):
-        return getattr(amsd.models, self.name).name
-
-    def search(self, qs):
-        return icontains(getattr(amsd.models, self.name).name, qs)
-
-
 class AmsdThumbnailCol(Col):
     __kw__ = dict(bSearchable=False, bSortable=False)
 
@@ -128,9 +124,9 @@ class AmsdThumbnailCol(Col):
 class AmsdLongTextFieldCol(Col):
     def format(self, item):
         v = self.get_value(item)
-        if not v:
+        if not v:  # pragma: no cover
             return ''
-        return v[:100] + '...' if len(v) > 100 else v
+        return v[:130] + '...' if len(v) > 130 else v
 
 
 class AmsdSources(Sources):
