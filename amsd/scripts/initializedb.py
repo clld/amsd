@@ -31,9 +31,9 @@ def main(args):
     dataset = common.Dataset(
         id=amsd.__name__,
         name="AMSD",
-        publisher_name="Max Planck Institute for the Science of Human History",
-        publisher_place="Jena",
-        publisher_url="https://www.shh.mpg.de",
+        publisher_name="Max Planck Institute for Evolutionary Anthropology",
+        publisher_place="Leipzig",
+        publisher_url="https://www.eva.mpg.de",
         license="https://creativecommons.org/licenses/by/4.0/",
         domain='amsd.clld.org',
         contact='kelly@shh.mpg.de',

@@ -57,7 +57,7 @@ class AmsdContributions(Contributions):
                 contr_pks = contr_pks & q if contr_pks else q
 
         if was_prefiltered:
-            query = query.filter(Contribution.pk.in_(contr_pks))
+            query = query.filter(Contribution.pk.in_([i for i, in contr_pks]))
 
         return query.outerjoin(x_keywords, keywords).options(
             joinedload(MessageStick._files)).distinct()
