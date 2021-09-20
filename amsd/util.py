@@ -19,7 +19,7 @@ import amsd.models
 def contribution_index_html(context=None, request=None, **kw):
     q = DBSession.query(amsd.models.MessageStick)
     c_all = q.count()
-    c_loc = q.filter(amsd.models.MessageStick.latitude is not None).count()
+    c_loc = q.filter(amsd.models.MessageStick.latitude.is_not(None)).count()
     c_note = None
     if c_loc < c_all:
         c_note = 'Note: only %i of %i message sticks have geographical coordinates' % (
@@ -78,7 +78,7 @@ def source_detail_html(context=None, request=None, **kw):
 def get_sticks(source):
     res = {}
     obj_pks = DBSession.query(Contribution_files.object_pk).filter(
-        Contribution_files.name == source.name).distinct().all()
+        Contribution_files.name == source.name).distinct()
     q = DBSession.query(Contribution).filter(Contribution.pk.in_(obj_pks)).distinct()
     res[Contribution.__name__.lower()] = q.all()
     return res
@@ -210,8 +210,8 @@ class XMultiSelect(MultiSelect):
 
     @classmethod
     def query(cls, name):
-        return DBSession.query(getattr(amsd.models, name).name).distinct() \
-            .order_by(getattr(amsd.models, name).name)
+        return [i for i, in DBSession.query(getattr(amsd.models, name).name).distinct() \
+            .order_by(getattr(amsd.models, name).name)]
 
     def get_options(self):
         return {
