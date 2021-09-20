@@ -18,8 +18,8 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'clld>=8.0.0',
         'pyramid>=2.0',
+        'clld>=8.0.0',
         'csvw>=1.11.0',
         'clldmpg>=4.2.0',
         'sqlalchemy>=1.4.23',
