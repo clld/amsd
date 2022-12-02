@@ -19,7 +19,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'pyramid>=2.0',
-        'clld>=9.2.1',
+        'clld>=9.2.2',
         'csvw>=1.11.0',
         'clldmpg>=4.2.0',
         'sqlalchemy>=1.4.27',

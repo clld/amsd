@@ -36,7 +36,7 @@ def main(args):
         publisher_url="https://www.eva.mpg.de",
         license="https://creativecommons.org/licenses/by/4.0/",
         domain='amsd.clld.org',
-        contact='kelly@shh.mpg.de',
+        contact='pkelly26@une.edu.au',
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'})
