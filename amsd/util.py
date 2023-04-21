@@ -105,7 +105,7 @@ def image_detail_html(context=None, request=None, **kw):
                     src=cdstar.bitstream_url(context),
                 ),
                 class_='image_single',
-                controls_='',
+                controls_=True,
             )}
     else:
         return {
@@ -151,6 +151,15 @@ def get_data_entry(context=None, request=None, **kw):
     for r in context.data_entry.split(';'):
         for f in DBSession.query(Contributor).filter(Contributor.id == r):
             res.append(HTML.a(f.name, href='%s/%s' % (request.route_url('contributors'), r)))
+    return ', '.join(res)
+
+
+def format_related_entries(context=None, request=None, **kw):
+    res = []
+    if context is None:  # pragma: no cover
+        return None
+    for r in sorted(context.split(';')):
+        res.append(HTML.a(r, href='{}/{}'.format(request.route_url('contributions'), r)))
     return ', '.join(res)
 
 

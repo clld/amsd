@@ -36,7 +36,7 @@ def main(args):
         publisher_url="https://www.eva.mpg.de",
         license="https://creativecommons.org/licenses/by/4.0/",
         domain='amsd.clld.org',
-        contact='pkelly26@une.edu.au',
+        contact='piers.kelly@gmail.com',
         jsondata={
             'license_icon': 'cc-by.png',
             'license_name': 'Creative Commons Attribution 4.0 International License'})
@@ -208,6 +208,7 @@ def main(args):
             irn=row['irn'],
             notes=row['notes'],
             data_entry=row['data_entry'],
+            related_entries=row['related_entries'],
             fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items if v)),
         )
 

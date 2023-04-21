@@ -35,7 +35,7 @@
     <div class="well well-small pull-left" style="width: 95%">
         <h4>How to cite:</h4>
         <p>
-            Kelly, Piers (ed.). 2018. The Australian Message Stick Database
+            Kelly, Piers (ed.). 2023. The Australian Message Stick Database
             (beta version)
         </p>
     </div>
