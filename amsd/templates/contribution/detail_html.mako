@@ -43,7 +43,7 @@
 % if ctx.ling_area_1:
     <p><b>Linguistic area 1: </b>
         % if ctx.ling_area_1.chirila_name:
-            ${h.external_link('http://chirila.yale.edu/languages/', label='Chirila')}: ${ctx.ling_area_1.chirila_name}
+            ${h.external_link('https://www.pamanyungan.net/', label='Chirila')}: ${ctx.ling_area_1.chirila_name}
         % endif
         % if ctx.ling_area_1.austlang_code or ctx.ling_area_1.austlang_name:
             %if ctx.ling_area_1.austlang_code:
@@ -58,7 +58,7 @@
 % if ctx.ling_area_2:
     <p><b>Linguistic area 2: </b>
         % if ctx.ling_area_2.chirila_name:
-            ${h.external_link('http://chirila.yale.edu/languages/', label='Chirila')}: ${ctx.ling_area_2.chirila_name}
+            ${h.external_link('https://www.pamanyungan.net/', label='Chirila')}: ${ctx.ling_area_2.chirila_name}
         % endif
         % if ctx.ling_area_2.austlang_code or ctx.ling_area_2.austlang_name:
             %if ctx.ling_area_2.austlang_code:
@@ -73,7 +73,7 @@
 % if ctx.ling_area_3:
     <p><b>Linguistic area 3: </b>
     % if ctx.ling_area_3.chirila_name:
-        ${h.external_link('http://chirila.yale.edu/languages/', label='Chirila')}: ${ctx.ling_area_3.chirila_name}
+        ${h.external_link('https://www.pamanyungan.net/', label='Chirila')}: ${ctx.ling_area_3.chirila_name}
     % endif
     % if ctx.ling_area_3.austlang_code or ctx.ling_area_3.austlang_name:
         %if ctx.ling_area_3.austlang_code:
@@ -188,6 +188,11 @@
 % endif
 % if data_entry:
     <p><b>Data Entry: </b>${data_entry|n}</p>
+% endif
+% if ctx.related_entries:
+    <p><b>Related Entries: </b>
+        ${u.format_related_entries(ctx.related_entries, request)|n}
+    </p>
 % endif
 
 

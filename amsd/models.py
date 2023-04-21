@@ -154,6 +154,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     irn = Column(Unicode)
     notes = Column(Unicode)
     data_entry = Column(Unicode)
+    related_entries = Column(Unicode)
     fts = Column(TSVECTOR)
 
     def get_images(self, image_type='thumbnail', width='50', req=None):
@@ -162,6 +163,8 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
         res = []
         for k, f in self.files.items():
             if image_type in ['web', 'thumbnail']:
+                if f.mime_type is None:
+                    image_type = 'thumbnail'
                 if image_type == 'web' and f.mime_type.startswith('video'):
                     image_type = 'thumbnail'
                 res.append(
