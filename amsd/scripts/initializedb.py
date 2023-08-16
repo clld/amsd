@@ -87,6 +87,9 @@ def main(args):
                 mimetype=mimetypes.guess_type(row['path'])[0] if row['path'] else None,
             )
 
+    glossed_artefact_id = None
+    interpreted_artefact_id = None
+
     for m in 'item_type technique keywords material source_type '\
             'sem_domain holder_file item_subtype cultural_region'.split():
         for row in dicts(m):
@@ -95,6 +98,11 @@ def main(args):
                 row['pk'],
                 name=row['name'],
             )
+            if m == 'keywords':
+                if glossed_artefact_id is None and 'glossed_artefact' == row['name']:
+                    glossed_artefact_id = int(row['pk'])
+                if interpreted_artefact_id is None and 'interpreted_artefact' == row['name']:
+                    interpreted_artefact_id = int(row['pk'])
 
     DBSession.flush()
 
@@ -210,19 +218,35 @@ def main(args):
             data_entry=row['data_entry'],
             related_entries=row['related_entries'],
             fts=fts.tsvector('\n'.join(re.sub(r'[_\-]', '.', v) for v in fts_items if v)),
+            jsondata={'color': '#000000'},
         )
 
     DBSession.flush()
+
+    has_glossed_artefact = set()
+    has_interpreted_artefact = set()
+
     for row in dicts('sticks'):
         for t in ['sem_domain', 'material', 'source_type', 'technique', 'keywords']:
             if row[t]:
                 for _, k in enumerate(row[t].split(';')):
+                    if t == 'keywords':
+                        if int(k) == glossed_artefact_id:
+                            has_glossed_artefact.add(int(row['pk']))
+                        if int(k) == interpreted_artefact_id:
+                            has_interpreted_artefact.add(int(row['pk']))
                     data.add(
                         getattr(models, 'x_%s' % (t)),
                         k,
                         object_pk=int(row['pk']),
                         item_pk=int(k),
                     )
+
+    for row in DBSession.query(models.MessageStick):
+        if row.pk in has_glossed_artefact:
+            row.jsondata = {'color': '#fdfd53'}
+        if row.pk in has_interpreted_artefact and row.pk not in has_glossed_artefact:
+            row.jsondata = {'color': '#bc271a'}
 
 
 def prime_cache(args):
