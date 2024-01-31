@@ -3,6 +3,7 @@ import re
 from clld.web.datatables import Contributors, Contributions, Sources
 from clld.web.datatables.base import DataTable, Col, LinkCol, DetailsRowLinkCol, LinkToMapCol
 from clld.web.datatables.contributor import ContributionsCol
+from clld.web.util.helpers import contactmail
 from clld.db.models.common import Contribution
 from clldutils.misc import nfilter
 from amsd.models import MessageStick, keywords, x_keywords
@@ -13,6 +14,14 @@ from sqlalchemy.orm import joinedload
 from clld.db.meta import DBSession
 
 import amsd.models
+
+
+class AmsdContactCol(Col):
+    __kw__ = {'bSortable': False, 'bSearchable': False, 'sTitle': ''}
+
+    def format(self, item):
+        return contactmail(
+            self.dt.req, item, title="Give feedback")
 
 
 class AmsdContributors(Contributors):
@@ -69,6 +78,7 @@ class AmsdContributions(Contributions):
             AmsdThumbnailCol(self, 'image', sTitle='Image'),
             DetailsRowLinkCol(self, 'more'),
             LinkToMapCol(self, 'm'),
+            AmsdContactCol(self, ''),
             AmsdFtsCol(self, 'any_text_field', model_col=MessageStick.fts),
             Col(self, 'message', model_col=MessageStick.message, bVisible=False),
         ]
