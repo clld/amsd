@@ -11,11 +11,14 @@
 </div>
 % endif
 
+<div style='float: right;padding: 20px'>${h.contactmail(request, ctx, title="Give feedback")}</div>
+
 <h2>${ctx.id}</h2>
 
 % if ctx.title:
     <p><b>Title: </b>${ctx.title}</p>
 % endif
+
 % if ctx.description:
     <p><b>Description: </b>${ctx.description}</p>
 % endif
