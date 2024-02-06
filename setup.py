@@ -19,7 +19,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'pyramid>=2.0',
-        'clld>=10.0.0',
+        'clld>=11.0.1',
         'csvw>=3.1.3',
         'clldmpg>=4.3.0',
         'sqlalchemy>=1.4.27',
@@ -33,12 +33,12 @@ setup(
         'test': [
             'psycopg2>=2.8.6',
             'mock>=4.0.3',
-            'pytest>=7.2.1',
+            'pytest>=7.4.2',
             'pytest-clld>=1.2.0',
             'pytest-mock>=3.10.0',
             'pytest-cov>=4.0.0',
             'coverage>=5.5',
-            'selenium>=3.141',
+            'selenium>=4.17.2',
             'zope.component>=5.0.1',
         ],
     },
