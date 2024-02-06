@@ -115,6 +115,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
     item_type = relationship(item_type, backref='item_type')
     item_subtype_pk = Column(Integer, ForeignKey("item_subtype.pk"))
     item_subtype = relationship(item_subtype, backref='item_subtype')
+    state_territory = Column(Unicode)
     cultural_region_pk = Column(Integer, ForeignKey("cultural_region.pk"))
     cultural_region = relationship(cultural_region, backref='cultural_region')
     ling_area_1_pk = Column(Integer, ForeignKey("ling_area.pk"))

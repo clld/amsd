@@ -188,6 +188,7 @@ def main(args):
             place_created=row['place_created'],
             item_type_pk=row['item_type'] or None,
             item_subtype_pk=row['item_subtype'] or None,
+            state_territory=row['state_territory'],
             cultural_region_pk=row['cultural_region'] or None,
             ling_area_1_pk=row['ling_area_1'] or None,
             ling_area_2_pk=row['ling_area_2'] or None,

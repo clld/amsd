@@ -43,6 +43,9 @@
 % if ctx.item_subtype:
     <p><b>Subtype: </b>${ctx.item_subtype}</p>
 % endif
+% if ctx.state_territory:
+    <p><b>State/Territory: </b>${ctx.state_territory}</p>
+% endif
 % if ctx.ling_area_1:
     <p><b>Linguistic area 1: </b>
         % if ctx.ling_area_1.chirila_name:
