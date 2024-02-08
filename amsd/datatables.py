@@ -37,7 +37,7 @@ class AmsdContributions(Contributions):
         Contributions.__init__(self, req, *args, **kw)
 
         # define which datatable column should be appear for prefiltering
-        self.remote_fields = [5, 6]
+        self.remote_fields = [1, 6]
 
         # init prefilters
         for c in ['sem_domain', 'keywords'] + ['sSearch_{0}'.format(i) for i in self.remote_fields]:
