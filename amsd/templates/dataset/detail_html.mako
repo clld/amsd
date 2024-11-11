@@ -35,8 +35,8 @@
     <div class="well well-small pull-left" style="width: 95%">
         <h4>How to cite:</h4>
         <p>
-            Kelly, Piers (ed.). 2023. The Australian Message Stick Database
-            (beta version)
+            Kelly, Piers, Junran Lei, Hans-Jörg Bibiko, and Lorina Barker. 2024.<br />"AMSD: The Australian Message Stick Database."<br />
+            PLOS One 19 (4): e0299712. doi: <a href="https://doi.org/10.1371/journal.pone.0299712">https://doi.org/10.1371/journal.pone.0299712</a>
         </p>
     </div>
 </div>
