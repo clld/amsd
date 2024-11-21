@@ -168,16 +168,30 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
                     image_type = 'thumbnail'
                 if image_type == 'web' and f.mime_type.startswith('video'):
                     image_type = 'thumbnail'
-                res.append(
-                    HTML.a(
-                        HTML.img(
-                            src=cdstar.bitstream_url(f, image_type),
-                            width='%spx' % (width) if width else 'auto',
-                            class_='image_%s' % (image_type),
-                        ),
-                        href='%s/%s' % (req.route_url('images'), f.id),
-                        title=f.name,
-                        target='_new',
+                if image_type == 'web' and f.mime_type.startswith('audio'):
+                    res.append(
+                        HTML.a(
+                            HTML.audio(
+                                HTML.source(
+                                    src=cdstar.bitstream_url(f, 'audio'),
+                                ),
+                                controls_=True,
+                            ),
+                            href='%s/%s' % (req.route_url('images'), f.id),
+                            title=f.name,
+                            target='_new',
+                        )
                     )
-                )
+                else:
+                    res.append(
+                        HTML.a(
+                            HTML.img(
+                                src=cdstar.bitstream_url(f, image_type),
+                                width='%spx' % (width) if width else 'auto',
+                            ),
+                            href='%s/%s' % (req.route_url('images'), f.id),
+                            title=f.name,
+                            target='_new',
+                        )
+                    )
         return ''.join(res)

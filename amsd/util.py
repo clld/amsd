@@ -5,6 +5,7 @@ from clld.db.models.common import (
     Contributor,
     Contribution,
     Contribution_files,
+    ContributionContributor,
 )
 from clld.web.util.component import Component
 from clld.web.util.htmllib import HTML
@@ -75,12 +76,25 @@ def source_detail_html(context=None, request=None, **kw):
         context, exclude=['valueset', 'sentence', 'language'])}
 
 
+def contributor_detail_html(context=None, request=None, **kw):
+    return {'referents': get_sticks_by_dataentry(context)}
+
+
+def get_sticks_by_dataentry(d):
+    res = {}
+    obj_pks = DBSession.query(ContributionContributor.contribution_pk).filter(
+        ContributionContributor.contributor_pk == d.pk).distinct()
+    q = DBSession.query(Contribution).filter(Contribution.pk.in_(obj_pks)).distinct()
+    res[Contribution.__name__.lower()] = q.order_by(Contribution.id).all()
+    return res
+
+
 def get_sticks(source):
     res = {}
     obj_pks = DBSession.query(Contribution_files.object_pk).filter(
         Contribution_files.name == source.name).distinct()
     q = DBSession.query(Contribution).filter(Contribution.pk.in_(obj_pks)).distinct()
-    res[Contribution.__name__.lower()] = q.all()
+    res[Contribution.__name__.lower()] = q.order_by(Contribution.id).all()
     return res
 
 
@@ -101,6 +115,16 @@ def image_detail_html(context=None, request=None, **kw):
         return {
             'referents': referents,
             'image': HTML.video(
+                HTML.source(
+                    src=cdstar.bitstream_url(context),
+                ),
+                class_='image_single',
+                controls_=True,
+            )}
+    if context.mime_type.startswith('audio/'):
+        return {
+            'referents': referents,
+            'image': HTML.audio(
                 HTML.source(
                     src=cdstar.bitstream_url(context),
                 ),
@@ -219,8 +243,10 @@ class XMultiSelect(MultiSelect):
 
     @classmethod
     def query(cls, name):
-        return [i for i, in DBSession.query(getattr(amsd.models, name).name).distinct() \
-            .order_by(getattr(amsd.models, name).name)]
+        return [i for i, in DBSession.query(
+                getattr(amsd.models, name).name)
+                .distinct()
+                .order_by(getattr(amsd.models, name).name)]
 
     def get_options(self):
         return {

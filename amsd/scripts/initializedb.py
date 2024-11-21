@@ -43,18 +43,26 @@ def main(args):
 
     DBSession.add(dataset)
 
-    editors = OrderedDict([('Piers Kelly', None)])
+    editors = OrderedDict([('Piers Kelly', None), ('Junran Lei', None),
+                           ('Hans-Jörg Bibiko', None), ('Lorina Barker', None)])
 
     # data_entry => Contributor
-    for row in sorted(dicts('data_entry'), key=lambda x: [x['name'].lower()]):
+    dataentry_map = {}
+    dict_dataentry = dicts('data_entry')
+    dict_dataentry.append(OrderedDict([('pk', str(len(dict_dataentry)+1)),
+                                       ('name', 'Junran Lei')]))
+    dict_dataentry.append(OrderedDict([('pk', str(len(dict_dataentry)+1)),
+                                       ('name', 'Hans-Jörg Bibiko')]))
+    for row in sorted(dict_dataentry, key=lambda x: [x['name'].lower()]):
         if row['name'] in editors:
             editors[row['name']] = row['pk']
-        data.add(
+        d = data.add(
             common.Contributor,
             row['pk'],
             id=row['pk'],
             name=row['name']
         )
+        dataentry_map[row['pk']] = d
 
     for i, cid in enumerate(editors.values()):
         common.Editor(dataset=dataset, contributor=data['Contributor'][cid], ord=i + 1)
@@ -176,7 +184,7 @@ def main(args):
                     fts_items.append(n)
                     fts_items.extend(nfilter(re.split(r'[_\-\.]', n)))
 
-        data.add(
+        ms = data.add(
             models.MessageStick,
             row['pk'],
             id=row['amsd_id'].replace('.', '_') or "amsd_{:05d}".format(i),
@@ -222,7 +230,14 @@ def main(args):
             jsondata={'color': '#000000'},
         )
 
-    DBSession.flush()
+        DBSession.flush()
+        for c in row['data_entry'].split(';'):
+            if c:
+                DBSession.add(common.ContributionContributor(
+                    contribution=ms,
+                    contributor=dataentry_map[c],
+                    ord=1,
+                    primary=True))
 
     has_glossed_artefact = set()
     has_interpreted_artefact = set()
