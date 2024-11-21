@@ -13,13 +13,13 @@
     </div>
     % endif
     % if ctx.title:
-        <p><b>Title: </b>${ctx.title}</p>
+        <p><b>Title: </b>${ctx.title | n}</p>
     % endif
     % if ctx.description:
-        <p><b>Description: </b>${ctx.description}</p>
+        <p><b>Description: </b>${ctx.description | n}</p>
     % endif
     % if ctx.message:
-        <p><b>Message: </b>${ctx.message}</p>
+        <p><b>Message: </b>${ctx.message | n}</p>
     % endif
     % if ctx.references:
         <p><b>Sources: </b>${u.amsd_linked_references(request, ctx)}</p>

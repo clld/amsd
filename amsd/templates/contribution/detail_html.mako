@@ -20,13 +20,13 @@
 % endif
 
 % if ctx.description:
-    <p><b>Description: </b>${ctx.description}</p>
+    <p><b>Description: </b>${ctx.description | n}</p>
 % endif
 % if ctx.message:
-    <p><b>Message: </b>${ctx.message}</p>
+    <p><b>Message: </b>${ctx.message | n}</p>
 % endif
 % if ctx.obj_creator:
-    <p><b>Creator of Object: </b>${ctx.obj_creator}</p>
+    <p><b>Creator of Object: </b>${ctx.obj_creator | n}</p>
 % endif
 % if ctx.date_created:
     <p><b>Date Created: </b>${ctx.date_created}</p>
@@ -92,7 +92,7 @@
     </p>
 % endif
 % if ctx.notes_ling_area:
-    <p><b>Notes on linguistic areas: </b>${ctx.notes_ling_area}</p>
+    <p><b>Notes on linguistic areas: </b>${ctx.notes_ling_area | n}</p>
 % endif
 % if ctx.cultural_region:
     <p><b>Cultural region: </b>${ctx.cultural_region}</p>
@@ -144,7 +144,7 @@
     <b>object identifier: </b>${ctx.holder_obj_id}</p>
 % endif
 % if ctx.collector:
-    <p><b>Collector: </b>${ctx.collector}</p>
+    <p><b>Collector: </b>${ctx.collector | n}</p>
 % endif
 % if ctx.place_collected:
     <p><b>Place collected: </b>${ctx.place_collected}</p>
@@ -186,7 +186,7 @@
     <p><b>IRN: </b>${ctx.irn}</p>
 % endif
 % if ctx.notes:
-    <p><b>Notes: </b>${ctx.notes}</p>
+    <p><b>Notes: </b>${ctx.notes | n}</p>
 % endif
 % if linked_filename_urls:
     <p><b>Media Files:</b></p>
