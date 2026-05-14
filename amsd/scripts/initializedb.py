@@ -1,4 +1,3 @@
-import sys
 import re
 import mimetypes
 from collections import OrderedDict
@@ -25,24 +24,22 @@ def dicts(name):
 
 
 def main(args):
-
     data = Data()
-
     dataset = common.Dataset(
         id=amsd.__name__,
         name="AMSD",
         publisher_name="Max Planck Institute for Evolutionary Anthropology",
         publisher_place="Leipzig",
         publisher_url="https://www.eva.mpg.de",
-        license="https://creativecommons.org/licenses/by/4.0/",
+        #license="https://creativecommons.org/licenses/by/4.0/",
         domain='amsd.clld.org',
         contact='piers.kelly@gmail.com',
-        jsondata={
-            'license_icon': 'cc-by.png',
-            'license_name': 'Creative Commons Attribution 4.0 International License'})
+        jsondata={}
+        #    'license_icon': 'cc-by.png',
+        #    'license_name': 'Creative Commons Attribution 4.0 International License'}
+    )
 
     DBSession.add(dataset)
-
     editors = OrderedDict([('Piers Kelly', None), ('Junran Lei', None),
                            ('Hans-Jörg Bibiko', None), ('Lorina Barker', None)])
 
@@ -53,6 +50,7 @@ def main(args):
                                        ('name', 'Junran Lei')]))
     dict_dataentry.append(OrderedDict([('pk', str(len(dict_dataentry)+1)),
                                        ('name', 'Hans-Jörg Bibiko')]))
+
     for row in sorted(dict_dataentry, key=lambda x: [x['name'].lower()]):
         if row['name'] in editors:
             editors[row['name']] = row['pk']
@@ -270,8 +268,3 @@ def prime_cache(args):
     This procedure should be separate from the db initialization, because
     it will have to be run periodically whenever data has been updated.
     """
-
-
-if __name__ == '__main__':  # pragma: no cover
-    initializedb(create=main, prime_cache=prime_cache)
-    sys.exit(0)

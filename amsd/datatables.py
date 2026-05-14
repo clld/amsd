@@ -7,7 +7,6 @@ from clld.web.util.helpers import contactmail
 from clld.db.models.common import Contribution
 from clldutils.misc import nfilter
 from amsd.models import MessageStick, keywords, x_keywords
-from clld.db.util import icontains
 
 from sqlalchemy import or_, func
 from sqlalchemy.orm import joinedload
@@ -37,7 +36,7 @@ class AmsdContributions(Contributions):
         Contributions.__init__(self, req, *args, **kw)
 
         # define which datatable column should be appear for prefiltering
-        self.remote_fields = [1, 6]
+        self.remote_fields = [6]
 
         # init prefilters
         for c in ['sem_domain', 'keywords'] + ['sSearch_{0}'.format(i) for i in self.remote_fields]:
