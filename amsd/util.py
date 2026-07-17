@@ -12,9 +12,16 @@ from clld.web.util.htmllib import HTML
 from clld.web.util.helpers import get_referents, link
 from clld.web.util.multiselect import MultiSelect
 
-from clldmpg import cdstar
-
 import amsd.models
+
+
+class S3:
+    @staticmethod
+    def bitstream_url(obj, *args, **kw):
+        key = obj.jsondata['key']
+        if key.startswith('EAEA0-52CC-0295-6B71-0.'):
+            key = 'EAEA0-52CC-0295-6B71-0.png'
+        return f"https://s3.nexus.mpcdf.mpg.de/eva-dlce-amsd/{key}"
 
 
 def contribution_index_html(context=None, request=None, **kw):
@@ -45,7 +52,7 @@ def contribution_detail_html(context=None, request=None, **kw):
         'materials': get_x_data('material', context, request),
         'techniques': get_x_data('technique', context, request),
         'source_types': get_x_data('source_type', context, request),
-        'linked_filename_urls': context.get_images(image_type='web', width='', req=request),
+        'linked_filename_urls': context.get_images(image_type='web', width='50%', req=request),
     }
 
 
@@ -57,7 +64,7 @@ def dataset_detail_html(context=None, request=None, **kw):
             .filter(Contribution_files.name == example_image_name).all()[0]
         example = {
             'link_url': '%s/%s' % (request.route_url('images'), example_context.id),
-            'image_url': cdstar.bitstream_url(example_context)}
+            'image_url': S3.bitstream_url(example_context)}
     except IndexError:  # pragma: no cover
         pass
     return {
@@ -105,8 +112,7 @@ def image_detail_html(context=None, request=None, **kw):
                 'image': HTML.div(
                     HTML.iframe(
                         class_='pdf_iframe',
-                        src='%sbitstreams/%s/%s' % (
-                            cdstar.SERVICE_URL, context.jsondata.get('refobjid'), context.jsondata.get('original')),
+                        src=S3.bitstream_url(context),
                         frameborder='0',
                     ),
                     class_='div_pdf_iframe',
@@ -116,7 +122,7 @@ def image_detail_html(context=None, request=None, **kw):
             'referents': referents,
             'image': HTML.video(
                 HTML.source(
-                    src=cdstar.bitstream_url(context),
+                    src=S3.bitstream_url(context),
                 ),
                 class_='image_single',
                 controls_=True,
@@ -126,7 +132,7 @@ def image_detail_html(context=None, request=None, **kw):
             'referents': referents,
             'image': HTML.audio(
                 HTML.source(
-                    src=cdstar.bitstream_url(context),
+                    src=S3.bitstream_url(context),
                 ),
                 class_='image_single',
                 controls_=True,
@@ -136,7 +142,7 @@ def image_detail_html(context=None, request=None, **kw):
             'referents': referents,
             'image': HTML.img(
                 class_='image_single',
-                src=cdstar.bitstream_url(context))}
+                src=S3.bitstream_url(context))}
 
 
 def amsd_linked_references(req, obj):

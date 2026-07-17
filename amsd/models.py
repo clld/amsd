@@ -21,7 +21,6 @@ from clld.db.models.common import (
 )
 
 from clld.web.util.htmllib import HTML
-from clldmpg import cdstar
 from amsd import util
 
 
@@ -173,7 +172,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
                         HTML.a(
                             HTML.audio(
                                 HTML.source(
-                                    src=cdstar.bitstream_url(f, 'audio'),
+                                    src=util.S3.bitstream_url(f, 'audio'),
                                 ),
                                 controls_=True,
                             ),
@@ -186,7 +185,7 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
                     res.append(
                         HTML.a(
                             HTML.img(
-                                src=cdstar.bitstream_url(f, image_type),
+                                src=util.S3.bitstream_url(f, image_type),
                                 width='%spx' % (width) if width else 'auto',
                             ),
                             href='%s/%s' % (req.route_url('images'), f.id),

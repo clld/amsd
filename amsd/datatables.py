@@ -74,7 +74,7 @@ class AmsdContributions(Contributions):
         return [
             LinkCol(self, 'id', model_col=Contribution.id),
             AmsdLongTextFieldCol(self, 'title', model_col=MessageStick.title),
-            AmsdThumbnailCol(self, 'image', sTitle='Image'),
+            AmsdThumbnailCol(self, 'image', sTitle='Media'),
             DetailsRowLinkCol(self, 'more'),
             LinkToMapCol(self, 'm'),
             AmsdContactCol(self, ''),
@@ -127,7 +127,7 @@ class AmsdThumbnailCol(Col):
     __kw__ = dict(bSearchable=False, bSortable=False)
 
     def format(self, item):
-        return item.get_images(req=self.dt.req)
+        return '🗹' if item.get_images(req=self.dt.req) else ''
 
 
 class AmsdLongTextFieldCol(Col):

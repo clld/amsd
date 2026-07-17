@@ -157,6 +157,11 @@ def main(args):
                 if k in fd:
                     oid = fd[k].get('oid')
                     mt = fd[k].get('mimetype')
+
+                    #
+                    # s3 key: oid + extension!
+                    #
+
                     refobjid = ''
                     if mt == 'application/pdf':
                         refobjid = oid
@@ -169,13 +174,7 @@ def main(args):
                         id='%s-%s-%i' % (k, row['pk'], j),
                         object_pk=int(row['pk']),
                         name=n,
-                        jsondata=dict(
-                            original=fd[k].get('path'),
-                            objid=oid,
-                            refobjid=refobjid,
-                            web='web.jpg',
-                            thumbnail='thumbnail.jpg',
-                        ),
+                        jsondata=dict(key=f'{oid}{mimetypes.guess_extension(mt)}'),
                         ord=j,
                         mime_type=mt,
                     )
