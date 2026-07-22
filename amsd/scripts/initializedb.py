@@ -8,7 +8,7 @@ from clld.db.meta import DBSession
 from clld.db.models import common
 from clldutils.path import Path
 from csvw.dsv import reader
-from clldutils.misc import slug, nfilter
+from clldutils.misc import nfilter
 
 import amsd
 from amsd import models
@@ -17,10 +17,7 @@ data_file_path = Path(amsd.__file__).parent / '../..' / 'amsd-data'
 
 
 def dicts(name):
-    res = []
-    for item in reader(data_file_path / 'raw/{0}.csv'.format(name), dicts=True):
-        res.append(item)
-    return res
+    return list(reader(data_file_path / 'raw/{0}.csv'.format(name), dicts=True))
 
 
 def main(args):
@@ -35,8 +32,6 @@ def main(args):
         domain='amsd.clld.org',
         contact='piers.kelly@gmail.com',
         jsondata={}
-        #    'license_icon': 'cc-by.png',
-        #    'license_name': 'Creative Commons Attribution 4.0 International License'}
     )
 
     DBSession.add(dataset)
@@ -54,25 +49,14 @@ def main(args):
     for row in sorted(dict_dataentry, key=lambda x: [x['name'].lower()]):
         if row['name'] in editors:
             editors[row['name']] = row['pk']
-        d = data.add(
-            common.Contributor,
-            row['pk'],
-            id=row['pk'],
-            name=row['name']
-        )
+        d = data.add(common.Contributor, row['pk'], id=row['pk'], name=row['name'])
         dataentry_map[row['pk']] = d
 
     for i, cid in enumerate(editors.values()):
         common.Editor(dataset=dataset, contributor=data['Contributor'][cid], ord=i + 1)
 
     for row in dicts('source_citation'):
-        data.add(
-            common.Source,
-            row['pk'],
-            id=row['pk'],
-            note=row['name'],
-            name=row['name'],
-        )
+        data.add(common.Source, row['pk'], id=row['pk'], note=row['name'], name=row['name'])
 
     for row in dicts('ling_area'):
         data.add(
@@ -99,11 +83,7 @@ def main(args):
     for m in 'item_type technique keywords material source_type '\
             'sem_domain holder_file item_subtype cultural_region'.split():
         for row in dicts(m):
-            data.add(
-                getattr(models, m),
-                row['pk'],
-                name=row['name'],
-            )
+            data.add(getattr(models, m), row['pk'], name=row['name'])
             if m == 'keywords':
                 if glossed_artefact_id is None and 'glossed_artefact' == row['name']:
                     glossed_artefact_id = int(row['pk'])
@@ -119,7 +99,6 @@ def main(args):
     x_cols = ['sem_domain', 'material', 'source_type', 'technique', 'keywords',
               'holder_file', 'item_type', 'item_subtype', 'cultural_region']
     for i, row in enumerate(dicts('sticks')):
-
         fts_items = []
         for col in row.keys():
             if col:
@@ -158,13 +137,8 @@ def main(args):
                     oid = fd[k].get('oid')
                     mt = fd[k].get('mimetype')
 
-                    #
                     # s3 key: oid + extension!
-                    #
-
-                    refobjid = ''
                     if mt == 'application/pdf':
-                        refobjid = oid
                         # use for web, thumbnail a place holder image
                         oid = 'EAEA0-52CC-0295-6B71-0'
                     n = fd[k].get('name')

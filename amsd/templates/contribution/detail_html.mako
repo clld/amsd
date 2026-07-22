@@ -13,10 +13,10 @@
 
 <div style='float: right;padding: 20px'>${h.contactmail(request, ctx, title="Give feedback")}</div>
 
-<h2>${ctx.id}</h2>
+<h3>${ctx.id}</h3>
 
 % if ctx.title:
-    <p><b>Title: </b>${ctx.title}</p>
+    <p class="lead"><b>Title: </b>${ctx.title}</p>
 % endif
 
 % if ctx.description:
