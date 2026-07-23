@@ -21,6 +21,7 @@ def dicts(name):
 
 
 def main(args):
+    media = {r['ID']: r for r in reader(data_file_path / 'cldf/media.csv', dicts=True)}
     data = Data()
     dataset = common.Dataset(
         id=amsd.__name__,
@@ -136,11 +137,19 @@ def main(args):
                 if k in fd:
                     oid = fd[k].get('oid')
                     mt = fd[k].get('mimetype')
+                    jsondata = dict(key=f'{oid}{mimetypes.guess_extension(mt)}')
 
                     # s3 key: oid + extension!
+                    tnoid = oid
                     if mt == 'application/pdf':
                         # use for web, thumbnail a place holder image
-                        oid = 'EAEA0-52CC-0295-6B71-0'
+                        tnoid = 'EAEA0-52CC-0295-6B71-0'
+
+                    if tnoid + '_t' in media:
+                        jsondata['key_thumbnail'] = f'{tnoid}_t.jpg'
+                    if tnoid + '_w' in media:
+                        jsondata['key_web'] = f'{tnoid}_w.jpg'
+
                     n = fd[k].get('name')
                     data.add(
                         common.Contribution_files,
@@ -148,7 +157,7 @@ def main(args):
                         id='%s-%s-%i' % (k, row['pk'], j),
                         object_pk=int(row['pk']),
                         name=n,
-                        jsondata=dict(key=f'{oid}{mimetypes.guess_extension(mt)}'),
+                        jsondata=jsondata,
                         ord=j,
                         mime_type=mt,
                     )

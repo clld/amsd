@@ -17,8 +17,10 @@ import amsd.models
 
 class S3:
     @staticmethod
-    def bitstream_url(obj, *args, **kw):
+    def bitstream_url(obj, image_type=None):
         key = obj.jsondata['key']
+        if image_type == 'thumbnail' and 'key_thumbnail' in obj.jsondata:
+            key = obj.jsondata['key_thumbnail']
         if key.startswith('EAEA0-52CC-0295-6B71-0.'):
             key = 'EAEA0-52CC-0295-6B71-0.png'
         return f"https://s3.nexus.mpcdf.mpg.de/eva-dlce-amsd/{key}"
@@ -134,15 +136,13 @@ def image_detail_html(context=None, request=None, **kw):
                 HTML.source(
                     src=S3.bitstream_url(context),
                 ),
-                class_='image_single',
                 controls_=True,
             )}
-    else:
-        return {
-            'referents': referents,
-            'image': HTML.img(
-                class_='image_single',
-                src=S3.bitstream_url(context))}
+    return {
+        'referents': referents,
+        'image': HTML.img(
+            class_='image_single',
+            src=S3.bitstream_url(context))}
 
 
 def amsd_linked_references(req, obj):

@@ -127,7 +127,7 @@ class AmsdThumbnailCol(Col):
     __kw__ = dict(bSearchable=False, bSortable=False)
 
     def format(self, item):
-        return '🗹' if item.get_images(req=self.dt.req) else ''
+        return item.get_images(req=self.dt.req)
 
 
 class AmsdLongTextFieldCol(Col):

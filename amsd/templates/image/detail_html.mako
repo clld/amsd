@@ -5,7 +5,7 @@
 <%block name="title">${ctx.id}</%block>
 
 <h4>${ctx.name}</h4>
-${image}
+${image|n}
 
 <%def name="sidebar()">
     <% referents, one_open = context.get('referents', {}), False %>

@@ -19,8 +19,9 @@ from clld.db.models.common import (
     IdNameDescriptionMixin,
     HasFilesMixin,
 )
-
+from clld.web.util.helpers import icon
 from clld.web.util.htmllib import HTML
+
 from amsd import util
 
 
@@ -162,35 +163,33 @@ class MessageStick(CustomModelMixin, Contribution, HasFilesMixin):
             return ''
         res = []
         for k, f in self.files.items():
-            if image_type in ['web', 'thumbnail']:
-                if f.mime_type is None:
-                    image_type = 'thumbnail'
-                if image_type == 'web' and f.mime_type.startswith('video'):
-                    image_type = 'thumbnail'
-                if image_type == 'web' and f.mime_type.startswith('audio'):
-                    res.append(
-                        HTML.a(
-                            HTML.audio(
-                                HTML.source(
-                                    src=util.S3.bitstream_url(f, 'audio'),
-                                ),
-                                controls_=True,
-                            ),
-                            href='%s/%s' % (req.route_url('images'), f.id),
-                            title=f.name,
-                            target='_new',
-                        )
-                    )
-                else:
-                    res.append(
-                        HTML.a(
-                            HTML.img(
-                                src=util.S3.bitstream_url(f, image_type),
-                                width='%spx' % (width) if width else 'auto',
-                            ),
-                            href='%s/%s' % (req.route_url('images'), f.id),
-                            title=f.name,
-                            target='_new',
-                        )
-                    )
+            assert f.mime_type
+            if image_type == 'thumbnail' and f.mime_type.startswith('audio'):
+                res.append(HTML.a(
+                    icon('volume-up'),
+                    href='%s/%s' % (req.route_url('images'), f.id),
+                    title=f.name,
+                    target='_new'))
+                continue
+
+            if image_type == 'web' and f.mime_type.startswith('video'):
+                image_type = 'thumbnail'
+
+            if image_type == 'web' and f.mime_type.startswith('audio'):
+                res.append(HTML.a(
+                    HTML.audio(HTML.source(src=util.S3.bitstream_url(f, 'audio')), controls_=True),
+                    href='%s/%s' % (req.route_url('images'), f.id),
+                    title=f.name,
+                    target='_new',
+                ))
+            else:
+                res.append(HTML.a(
+                    HTML.img(
+                        src=util.S3.bitstream_url(f, image_type),
+                        width='%spx' % (width) if width else 'auto',
+                    ),
+                    href='%s/%s' % (req.route_url('images'), f.id),
+                    title=f.name,
+                    target='_new',
+                ))
         return ''.join(res)
