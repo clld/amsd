@@ -1,4 +1,5 @@
 import re
+import functools
 import mimetypes
 from collections import OrderedDict
 
@@ -13,15 +14,15 @@ from clldutils.misc import nfilter
 import amsd
 from amsd import models
 
-data_file_path = Path(amsd.__file__).parent / '../..' / 'amsd-data'
 
-
-def dicts(name):
+def _dicts(data_file_path, name):
     return list(reader(data_file_path / 'raw/{0}.csv'.format(name), dicts=True))
 
 
 def main(args):
+    data_file_path = args.cldf.directory.parent.parent / 'amsd-data'
     media = {r['ID']: r for r in reader(data_file_path / 'cldf/media.csv', dicts=True)}
+    dicts = functools.partial(_dicts, data_file_path)
     data = Data()
     dataset = common.Dataset(
         id=amsd.__name__,

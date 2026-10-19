@@ -19,6 +19,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'pyramid>=2.0',
+        'pycldf',
         'clld>=11.2.2',
         'csvw>=3.3.0',
         'clldmpg>=4.3.1',
